@@ -1,5 +1,7 @@
 package com.requirementsthesauri.service;
 
+import com.franz.agraph.jena.AGGraph;
+import com.franz.agraph.jena.AGGraphMaker;
 import com.franz.agraph.repository.AGCatalog;
 import com.franz.agraph.repository.AGRepository;
 import com.franz.agraph.repository.AGRepositoryConnection;
@@ -24,6 +26,7 @@ public class Authentication {
     String USERNAME = "admin";
     String PASSWORD = "admin";
     AGRepositoryConnection conn;
+    AGGraphMaker maker;
 
     public void getConnectionDataBase() {
 
@@ -55,6 +58,12 @@ public class Authentication {
         println("Repository " + (myRepository.getRepositoryID())
                 + " is up! It contains " + (conn.size()) + " statements.");
         return myRepository;
+    }
+
+    public AGGraph GetConnectedDataRepository() throws Exception {
+        maker = new AGGraphMaker(conn);
+        AGGraph graph = maker.getGraph();
+        return graph;
     }
 
 
