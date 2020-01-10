@@ -33,19 +33,19 @@ public class DomainController {
 //    }
 
 
-//    @PostMapping(path = "/createDomainsList", consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> createDomainList(@RequestBody List<Domain> domains){
-//        return domainService.createDomain(domains);
-//    }
-//
-//    @PostMapping(path = "/createDomain", consumes = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> createDomain(@RequestBody Domain domain){
-//        List<Domain> domains  = new ArrayList<>();
-//        domains.add(domain);
-//        return domainService.createDomain(domains);
-//    }
+    @PostMapping(path = "/createDomainsList", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createDomainList(@RequestBody List<Domain> domains) throws Exception {
+        return domainService.createDomain(domains);
+    }
+
+    @PostMapping(path = "/createDomain", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createDomain(@RequestBody Domain domain) throws Exception {
+        List<Domain> domains  = new ArrayList<>();
+        domains.add(domain);
+        return domainService.createDomain(domains);
+    }
 
 //    @PutMapping(value = "/{domainID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<?> updateDomain(@PathVariable(value="domainID") String domainID, @RequestBody Domain newDomain) {

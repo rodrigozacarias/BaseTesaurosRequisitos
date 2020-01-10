@@ -25,8 +25,8 @@ public class Authentication {
     String REPOSITORY_ID = "requirements";
     String USERNAME = "admin";
     String PASSWORD = "admin";
-    AGRepositoryConnection conn;
-    AGGraphMaker maker;
+    static AGRepositoryConnection conn;
+    static AGGraphMaker maker;
 
     public void getConnectionDataBase() {
 
@@ -60,7 +60,7 @@ public class Authentication {
         return myRepository;
     }
 
-    public AGGraph GetConnectedDataRepository() throws Exception {
+    public AGGraph getConnectedDataRepository() throws Exception {
         maker = new AGGraphMaker(conn);
         AGGraph graph = maker.getGraph();
         return graph;
