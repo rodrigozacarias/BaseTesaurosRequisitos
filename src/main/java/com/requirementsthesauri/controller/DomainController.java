@@ -16,21 +16,21 @@ public class DomainController {
 
     DomainService domainService = new DomainService();
 
-//    @GetMapping("/getAllDomains")
-//    public ResponseEntity<?> getAllDomains(){
-//        return domainService.getAllDomains();
-//    }
-//
-//    @GetMapping(value = "/{domainID}", produces = {"application/json",
-//            "application/xml",
-//            "application/ld+json",
-//            "application/n-triples",
-//            "application/rdf+xml",
-//            "application/turtle",
-//            "application/rdf+json"})
-//    public ResponseEntity<?> getDomain(@PathVariable(value="domainID") String domainID, @RequestHeader("Accept") String accept){
-//        return domainService.getDomain(domainID, accept);
-//    }
+    @GetMapping("/getAllDomains")
+    public ResponseEntity<?> getAllDomains() throws Exception {
+        return domainService.getAllDomains();
+    }
+
+    @GetMapping(value = "/{domainID}", produces = {"application/json",
+            "application/xml",
+            "application/ld+json",
+            "application/n-triples",
+            "application/rdf+xml",
+            "application/turtle",
+            "application/rdf+json"})
+    public ResponseEntity<?> getDomain(@PathVariable(value="domainID") String domainID, @RequestHeader("Accept") String accept) throws Exception {
+        return domainService.getDomain(domainID, accept);
+    }
 
 
     @PostMapping(path = "/createDomainsList", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -47,15 +47,15 @@ public class DomainController {
         return domainService.createDomain(domains);
     }
 
-//    @PutMapping(value = "/{domainID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> updateDomain(@PathVariable(value="domainID") String domainID, @RequestBody Domain newDomain) {
-//        return domainService.updateDomain(domainID, newDomain);
-//    }
-//
-//    @DeleteMapping(value = "/{domainID}")
-//    public ResponseEntity<?> deleteDomain(@PathVariable(value="domainID") String domainID) {
-//        domainService.deleteDomain(domainID);
-//        return new ResponseEntity(HttpStatus.NO_CONTENT);
-//    }
+    @PutMapping(value = "/{domainID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateDomain(@PathVariable(value="domainID") String domainID, @RequestBody Domain newDomain) throws Exception {
+        return domainService.updateDomain(domainID, newDomain);
+    }
+
+    @DeleteMapping(value = "/{domainID}")
+    public ResponseEntity<?> deleteDomain(@PathVariable(value="domainID") String domainID) {
+        domainService.deleteDomain(domainID);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 }
