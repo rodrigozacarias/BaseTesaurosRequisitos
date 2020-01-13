@@ -35,7 +35,7 @@ public class SystemTypeService {
         JsonArrayBuilder jsonArrayAdd = Json.createArrayBuilder();
 
         for (int i = 0; i < TAM; i++) {
-            Resource resource = model.createResource(agUtils.uriSys + systemTypesList.get(i).getNarrowerRequirementID());
+            Resource resource = model.createResource(agUtils.uriSys + systemTypesList.get(i).getSystemTypeID());
 
             //       skos:Concept
             model.add(resource, model.getProperty(model.getNsPrefixURI("rdf") + "type"), model.createResource(model.getNsPrefixURI("skos") + "Concept"));
