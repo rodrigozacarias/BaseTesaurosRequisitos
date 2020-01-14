@@ -3,6 +3,7 @@ package com.requirementsthesauri.service;
 import com.franz.agraph.jena.*;
 import com.requirementsthesauri.model.Domain;
 import com.requirementsthesauri.model.Requirement;
+import com.requirementsthesauri.service.sparql.MethodsRequirementSPARQL;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -26,6 +27,7 @@ import java.util.List;
 public class RequirementService {
 
     Authentication authentication = new Authentication();
+    MethodsRequirementSPARQL methodsRequirementSPARQL = new MethodsRequirementSPARQL();
     AGUtils agUtils = new AGUtils();
 
     public ResponseEntity<?> createRequirement(List<Requirement> requirementsList) throws Exception {
@@ -145,14 +147,7 @@ public class RequirementService {
     public ResponseEntity<?> getAllRequirements(){
         authentication.getAuthentication();
 
-        String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "SELECT ?requirement \n" +
-                "WHERE\n" +
-                "{\n" +
-                "?requirement rdf:type skos:Concept .\n" +
-                "}\n" +
-                "";
+        String querySelect = methodsRequirementSPARQL.getAllRequirementsSparqlSelect();
 
         Query query = QueryFactory.create(querySelect);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(agUtils.sparqlEndpoint, query);
@@ -180,17 +175,7 @@ public class RequirementService {
     public void deleteRequirement(String requirementID) {
         authentication.getAuthentication();
 
-        String deleteQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
-                "\n" +
-                "DELETE \n" +
-                "	{ req:"+requirementID+" ?p ?s }\n" +
-                "WHERE\n" +
-                "{ \n" +
-                "  req:"+requirementID+" ?p ?s;\n" +
-                " 		rdf:type skos:Concept .\n" +
-                "};\n";
+        String deleteQuery = methodsRequirementSPARQL.deleteRequirementSparql(requirementID);
 
 
         UpdateRequest request = UpdateFactory.create(deleteQuery);

@@ -3,6 +3,7 @@ package com.requirementsthesauri.service;
 import com.franz.agraph.jena.*;
 import com.requirementsthesauri.model.Domain;
 import com.requirementsthesauri.model.SystemType;
+import com.requirementsthesauri.service.sparql.MethodsSystemTypeSPARQL;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -26,6 +27,7 @@ import java.util.List;
 public class SystemTypeService {
 
     Authentication authentication = new Authentication();
+    MethodsSystemTypeSPARQL methodsSystemTypeSPARQL = new MethodsSystemTypeSPARQL();
     AGUtils agUtils = new AGUtils();
 
     public ResponseEntity<?> createSystemType(List<SystemType> systemTypesList) throws Exception {
@@ -133,14 +135,7 @@ public class SystemTypeService {
     public ResponseEntity<?> getAllSystemTypes(){
         authentication.getAuthentication();
 
-        String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "SELECT ?system \n" +
-                "WHERE\n" +
-                "{\n" +
-                "?system rdf:type skos:Concept .\n" +
-                "}\n" +
-                "";
+        String querySelect = methodsSystemTypeSPARQL.getAllSystemTypesSparqlSelect();
 
         Query query = QueryFactory.create(querySelect);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(agUtils.sparqlEndpoint, query);
@@ -165,17 +160,7 @@ public class SystemTypeService {
     public void deleteSystemType(String systemTypeID) {
         authentication.getAuthentication();
 
-        String deleteQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
-                "\n" +
-                "DELETE \n" +
-                "	{ sys:"+systemTypeID+" ?p ?s }\n" +
-                "WHERE\n" +
-                "{ \n" +
-                "  sys:"+systemTypeID+" ?p ?s;\n" +
-                " 		rdf:type skos:Concept .\n" +
-                "};\n";
+        String deleteQuery = methodsSystemTypeSPARQL.deleteSystemTypeSparql(systemTypeID);
 
 
         UpdateRequest request = UpdateFactory.create(deleteQuery);

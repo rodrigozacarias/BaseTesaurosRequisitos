@@ -3,21 +3,18 @@ package com.requirementsthesauri.service;
 
 import com.franz.agraph.jena.*;
 import com.requirementsthesauri.model.Domain;
+import com.requirementsthesauri.service.sparql.MethodsDomainSPARQL;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.RDF;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonWriter;
+import javax.json.*;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -26,6 +23,7 @@ import java.util.List;
 public class DomainService {
 
     Authentication authentication = new Authentication();
+    MethodsDomainSPARQL methodsDomainSPARQL = new MethodsDomainSPARQL();
     AGUtils agUtils = new AGUtils();
 
 
@@ -46,7 +44,7 @@ public class DomainService {
             model.add(resource, model.getProperty(agUtils.schema + "url"), resource);
 
             //       rdfs:label
-            model.add(resource, model.getProperty(model.getNsPrefixURI("skos") + "label"), domainsList.get(i).getLabel());
+            model.add(resource, model.getProperty(model.getNsPrefixURI("rdfs") + "label"), domainsList.get(i).getLabel());
 
             //       skos:prefLabel
             model.add(resource, model.getProperty(model.getNsPrefixURI("skos") + "prefLabel"), domainsList.get(i).getPrefLabel());
@@ -88,7 +86,7 @@ public class DomainService {
         return new ResponseEntity<>(output, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<?> getDomain(String domainID, String accept) throws Exception {
+    public Model getDomain(String domainURI) throws Exception {
 
             authentication.getAuthentication();
 
@@ -107,7 +105,7 @@ public class DomainService {
             fakeModel.setNsPrefix("uriReq", agUtils.uriReq);
 
 
-            String queryString = "Describe <" + agUtils.uriDom + domainID + "> ?s ?p ?o ";
+            String queryString = "Describe <" + domainURI + "> ?s ?p ?o ";
 
             AGReasoner reasoner = new AGReasoner();
             AGInfModel infmodel = new AGInfModel(reasoner, model);
@@ -120,66 +118,142 @@ public class DomainService {
 
             fakeModel.add(results);
 
-
-            String format = agUtils.convertFromAcceptToFormat(accept);
-            OutputStream stream = new ByteArrayOutputStream();
-            if (format.isEmpty()){
-                fakeModel.write(stream, "TURTLE");
-            }else {
-                fakeModel.write(stream, format);
-            }
-            return new ResponseEntity<>(stream.toString(), HttpStatus.OK);
+            return fakeModel;
 
     }
 
-    public ResponseEntity<?> getAllDomains() throws Exception {
+    public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
+
+        Model fakeModel = getDomain(agUtils.uriDom + domainID);
+
+        String format = agUtils.convertFromAcceptToFormat(accept);
+        OutputStream stream = new ByteArrayOutputStream();
+        if (format.isEmpty()){
+            fakeModel.write(stream, "TURTLE");
+        }else {
+            fakeModel.write(stream, format);
+        }
+        return new ResponseEntity<>(stream.toString(), HttpStatus.OK);
+    }
+
+
+    public List<Domain> getAllDomains() throws Exception {
         authentication.getAuthentication();
 
-        String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "SELECT ?domain \n" +
-                "WHERE\n" +
-                "{\n" +
-                "?domain rdf:type skos:Concept .\n" +
-                "}\n" +
-                "";
-
+        String querySelect = methodsDomainSPARQL.getAllDomainsSparqlSelect();
         Query query = QueryFactory.create(querySelect);
         QueryExecution qexec = QueryExecutionFactory.create(query, agUtils.getAGModel());
 
         ResultSet results = qexec.execSelect();
 
-        JsonArrayBuilder jsonArrayAdd = Json.createArrayBuilder();
+        List<Domain> domains = new ArrayList<>();
+
         String c = "domain";
         while(results.hasNext()) {
             String uri = results.nextSolution().getResource(c).getURI();
             if(uri.contains("domains")) {
-                jsonArrayAdd.add(uri);
+
+                Model model = getDomain(uri);
+
+                NodeIterator nodes = model.listObjectsOfProperty(model.getProperty(agUtils.schema + "url"));
+
+
+
+                StmtIterator statements = model.listStatements();
+
+                while (nodes.hasNext()){
+                   RDFNode node = nodes.nextNode();
+
+                    System.out.println(node.toString());
+                }
+
             }
         }
-        JsonArray ja = jsonArrayAdd.build();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        JsonWriter writer = Json.createWriter(outputStream);
-        writer.writeArray(ja);
-        String output = new String(outputStream.toByteArray());
 
-        return new ResponseEntity<>(output, HttpStatus.OK);
+////        JsonArrayBuilder jsonArrayAdd = Json.createArrayBuilder();
+//
+//        String c = "domain";
+//        while(results.hasNext()) {
+//            String uri = results.nextSolution().getResource(c).getURI();
+//            if(uri.contains("domains")) {
+//
+//                Model model = getDomain(uri);
+//
+//                String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(uri);
+//                Query sparql = QueryFactory.create(qSelect);
+//                QueryExecution qe = QueryExecutionFactory.create(sparql, model);
+//
+//                ResultSet rs = qe.execSelect();
+//
+//                System.out.println(rs.getResourceModel().listStatements().nextStatement().toString());
+//                System.out.println(rs.nextSolution().toString());
+//
+//                QuerySolution solution = rs.nextSolution();
+//
+//                Domain domain = new Domain();
+//
+////                domain.setUrl(solution.getResource("url").toString());
+////                domain.setLabel(solution.getLiteral("label").toString());
+////                domain.setPrefLabel(solution.getLiteral("prefLabel").toString());
+////                domain.setAltLabel(solution.getLiteral("altLabel").toString());
+////                domain.setDescription(solution.getLiteral("description").toString());
+////                domain.setLinkDbpedia(solution.getResource("linkDbpedia").toString());
+////                domain.setDomainID(solution.getResource("broaderDomainID").toString());
+//
+//                String querySelectN = methodsDomainSPARQL.getDomainSparqlSelectNarrower(uri);
+//                Query querySN = QueryFactory.create(querySelectN);
+//                QueryExecution qexecN = QueryExecutionFactory.sparqlService(agUtils.sparqlEndpoint, querySN);
+//                ResultSet resultsN = qexecN.execSelect();
+//
+//                List<String> narrowerDomainID = new ArrayList<>();
+//                List<String> narrowerRequirementID = new ArrayList<>();
+//                c = "narrowerDomainID";
+//
+//                while(resultsN.hasNext()) {
+//                    uri = resultsN.nextSolution().getResource(c).getURI();
+//                    if(uri.contains("domains")) {
+//                        narrowerDomainID.add(uri);
+//                    }else{
+//                        narrowerRequirementID.add(uri);
+//                    }
+//                }
+//
+//                domain.setNarrowerDomainID(narrowerDomainID);
+//                domain.setNarrowerRequirementID(narrowerRequirementID);
+//
+////            String narrowerRequirementID = soln.getResource("narrowerRequirementID").toString();
+//
+//            domains.add(domain);
+//            }
+//        }
+////        JsonArray ja = jsonArrayAdd.build();
+//
+////        String c = "domain";
+////        while(results.hasNext()) {
+////            QuerySolution soln = results.nextSolution();
+////            String uri = soln.getResource(c).getURI();
+////            if(uri.contains("domains")) {
+////                Domain domain = new Domain();
+////
+////                domain.setUrl(soln.getResource("url").toString());
+////                domain.setLabel(soln.getLiteral("label").toString());
+////                domain.setPrefLabel(soln.getLiteral("prefLabel").toString());
+////                domain.setAltLabel(soln.getLiteral("altLabel").toString());
+////                domain.setDescription(soln.getLiteral("description").toString());
+////                domain.setLinkDbpedia(soln.getResource("linkDbpedia").toString());
+////                domain.setDomainID(soln.getResource("broaderDomainID").toString());
+////
+////                domains.add(domain);
+////            }
+////        }
+
+        return domains;
     }
 
     public void deleteDomain(String domainID) {
         authentication.getAuthentication();
 
-        String deleteQuery = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
-                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
-                "\n" +
-                "DELETE \n" +
-                "	{ dom:"+domainID+" ?p ?s }\n" +
-                "WHERE\n" +
-                "{ \n" +
-                "  dom:"+domainID+" ?p ?s;\n" +
-                " 		rdf:type skos:Concept .\n" +
-                "};\n";
+        String deleteQuery = methodsDomainSPARQL.deleteDomainSparql(domainID);
 
 
         UpdateRequest request = UpdateFactory.create(deleteQuery);
