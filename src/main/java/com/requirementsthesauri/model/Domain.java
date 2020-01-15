@@ -23,21 +23,7 @@ public class Domain {
     public Domain() {
     }
 
-    public Domain(String domainID, String url, String label, String prefLabel, String altLabel, String description,
-                  String linkDbpedia, String broaderDomainID, List<String> narrowerDomainID, List<String> narrowerRequirementID) {
-        this.domainID = domainID;
-        this.url = url;
-        this.label = label;
-        this.prefLabel = prefLabel;
-        this.altLabel = altLabel;
-        this.description = description;
-        this.linkDbpedia = linkDbpedia;
-        this.broaderDomainID = broaderDomainID;
-        this.narrowerDomainID = narrowerDomainID;
-        this.narrowerRequirementID = narrowerRequirementID;
-    }
-
-    public String getDomainID() {
+     public String getDomainID() {
         return domainID;
     }
 
@@ -93,14 +79,6 @@ public class Domain {
         this.linkDbpedia = linkDbpedia;
     }
 
-    public String getBroaderDomainID() {
-        return broaderDomainID;
-    }
-
-    public void setBroaderDomainID(String broaderDomainID) {
-        this.broaderDomainID = broaderDomainID;
-    }
-
     public List<String> getNarrowerDomainID() {
         return narrowerDomainID;
     }
@@ -115,5 +93,13 @@ public class Domain {
 
     public void setNarrowerRequirementID(List<String> narrowerRequirementID) {
         this.narrowerRequirementID = narrowerRequirementID;
+    }
+
+    public String getBroaderDomainID() {
+        return broaderDomainID;
+    }
+
+    public void setBroaderDomainID(String broaderDomainID) {
+        this.broaderDomainID = broaderDomainID;
     }
 }

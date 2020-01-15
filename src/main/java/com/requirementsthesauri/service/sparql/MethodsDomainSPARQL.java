@@ -13,6 +13,7 @@ public class MethodsDomainSPARQL {
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "PREFIX dbr: <http://dbpedia.org/resource/>\n" +
                 "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
                 "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
                 "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
                 "INSERT DATA\n" +
@@ -23,8 +24,9 @@ public class MethodsDomainSPARQL {
                 "                skos:preLabel	\""+prefLabel+"\" ;\n" +
                 "                skos:altLabel	\""+altLabel+"\" ;\n" +
                 "                skos:note	\""+description+"\" ;\n" +
-                "                rdfs:seeAlso	dbr:"+linkDbpedia+" ;\n" +
-                "                skos:broader	dom:"+broaderDomainID+" ;\n" ;
+                "                owl:sameAs	dbr:"+linkDbpedia+" ;\n" +
+                "                skos:broader	dom:"+broaderDomainID+" ;\n" +
+                "                rdfs:subClassOf	dom:"+broaderDomainID+" ;\n";
         if(!narrowerDomainID.isEmpty()){
             for (String nd: narrowerDomainID){
                 queryInsert = queryInsert + "                skos:narrower	dom:"+nd+" ;\n";
@@ -59,11 +61,42 @@ public class MethodsDomainSPARQL {
         String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
-                "SELECT ?narrowerDomainID \n" +
+                "SELECT DISTINCT ?narrowerDomainID \n" +
                 "WHERE\n" +
                 "{\n" +
                  "<"+domainURI+">	rdf:type		skos:Concept ;\n" +
                 "                 skos:narrower  ?narrowerDomainID .\n" +
+                "}\n" +
+                "";
+
+        return querySelect;
+    }
+
+    public String getDomainSparqlSelectBroader(String domainURI) {
+        String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
+                "SELECT DISTINCT ?broaderDomainID \n" +
+                "WHERE\n" +
+                "{\n" +
+                "<"+domainURI+">	rdf:type		skos:Concept ;\n" +
+                "                 skos:broader  ?broaderDomainID .\n" +
+                "}\n" +
+                "";
+
+        return querySelect;
+    }
+
+    public String getDomainSparqlSelectSubClass(String domainURI) {
+        String querySelect = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
+                "SELECT DISTINCT ?subClassOf \n" +
+                "WHERE\n" +
+                "{\n" +
+                "<"+domainURI+">	rdf:type		skos:Concept ;\n" +
+                "                 rdfs:subClassOf  ?subClassOf .\n" +
                 "}\n" +
                 "";
 
@@ -96,6 +129,8 @@ public class MethodsDomainSPARQL {
                 "";
         return query;
     }
+
+
 
     public String getDomainSparqlDescribe(String domainID) {
         String query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
