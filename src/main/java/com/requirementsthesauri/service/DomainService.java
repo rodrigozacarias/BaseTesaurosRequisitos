@@ -172,7 +172,8 @@ public class DomainService {
     }
 
 
-    public List<Domain> getAllDomains() throws Exception {
+
+    public List<Domain> getAllDomains1() throws Exception {
         authentication.getAuthentication();
 
         String querySelect = methodsDomainSPARQL.getAllDomainsSparqlSelect();
@@ -373,6 +374,54 @@ public class DomainService {
 
         return domains;
     }
+
+    public List<Domain> getAllDomains() throws Exception {
+        authentication.getAuthentication();
+
+        String querySelect = methodsDomainSPARQL.getAllDomainsSparqlSelect();
+
+        Query query = QueryFactory.create(querySelect);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(agUtils.sparqlEndpoint, query);
+
+
+        ResultSet results = qexec.execSelect();
+
+        List<Domain> domains = new ArrayList<>();
+
+        String c = "domain";
+        while(results.hasNext()) {
+            String uri = results.nextSolution().getResource(c).getURI();
+            if(uri.contains("domains")) {
+
+                Model model = getDomain(uri);
+
+                String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(uri);
+                Query queryS = QueryFactory.create(qSelect);
+                QueryExecution qe = QueryExecutionFactory.createServiceRequest(agUtils.sparqlEndpoint, queryS);
+
+
+                QuerySolution solution =  qe.execSelect().next();
+
+                Domain domain = new Domain();
+
+                domain.setUrl(solution.getResource("url").toString());
+                domain.setLabel(solution.getLiteral("label").toString());
+//                domain.setPrefLabel(solution.getLiteral("prefLabel").toString());
+//                domain.setAltLabel(solution.getLiteral("altLabel").toString());
+//                domain.setDescription(solution.getLiteral("description").toString());
+//                domain.setLinkDbpedia(solution.getResource("linkDbpedia").toString());
+//                domain.setBroaderDomainID(solution.getResource("broaderDomainID").toString());
+
+                qe.close();
+
+                domains.add(domain);
+
+
+            }
+        }
+        return domains;
+    }
+
 
     public void deleteDomain(String domainID) {
         authentication.getAuthentication();
