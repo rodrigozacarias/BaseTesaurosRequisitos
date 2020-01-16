@@ -190,7 +190,7 @@ public class MethodsDomainSPARQL {
         return queryUpdate;
     }
 
-    public String deleteDomainSparql(String domainID){
+    public String deleteDomainSparql1(String domainID){
 
         String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -201,6 +201,23 @@ public class MethodsDomainSPARQL {
                 "WHERE\n" +
                 "{ \n" +
                 "  dom:"+domainID+" ?p ?s;\n" +
+                " 		rdf:type skos:Concept .\n" +
+                "};\n";
+
+        return queryDelete;
+    }
+
+    public String deleteDomainSparql(String domainURI){
+
+        String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
+                "\n" +
+                "DELETE \n" +
+                "	{   <"+domainURI+"> ?p ?s }\n" +
+                "WHERE\n" +
+                "{ \n" +
+                "  <"+domainURI+"> ?p ?s;\n" +
                 " 		rdf:type skos:Concept .\n" +
                 "};\n";
 

@@ -423,10 +423,10 @@ public class DomainService {
     }
 
 
-    public void deleteDomain(String domainID) {
+    public void deleteDomain(String domainURI) {
         authentication.getAuthentication();
 
-        String deleteQuery = methodsDomainSPARQL.deleteDomainSparql(domainID);
+        String deleteQuery = methodsDomainSPARQL.deleteDomainSparql(domainURI);
 
 
         UpdateRequest request = UpdateFactory.create(deleteQuery);

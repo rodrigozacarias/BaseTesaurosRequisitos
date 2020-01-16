@@ -71,7 +71,7 @@
                         </td>
                         <td>
                             <!-- EXCLUINDO UM REGISTRO CADASTRADO -->
-                            <form action="#"  method="post">
+                            <form action="#" th:href="@{/webapp/domains/excluir}" href="/webapp/domains/excluir}" method="delete">
                                 <input type="hidden" name="uriDomain" th:value="${domain.url}" />
                                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Deseja realmente excluir esse registro?');"><i >Excluir</i></button>
                             </form>
