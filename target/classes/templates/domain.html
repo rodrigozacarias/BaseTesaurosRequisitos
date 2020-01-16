@@ -9,7 +9,7 @@
     <link  rel="stylesheet" th:href="@{/css/sistema.css}" href="../static/css/sistema.css"/>
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
-    <title>Login</title>
+    <title>Domínios</title>
 </head>
 <body>
 
@@ -42,7 +42,7 @@
 
         <div >
             <div class="container"  align="center">
-              <span style="padding-left:5px;">Domínios Cadastrados</span>
+              <h1>Domínios Cadastrados</h1>
             </div>
 
             <table class="table table-hover">
@@ -71,7 +71,7 @@
                         </td>
                         <td>
                             <!-- EXCLUINDO UM REGISTRO CADASTRADO -->
-                            <form action="#" th:href="@{/webapp/domains/excluir}" href="/webapp/domains/excluir}" method="delete">
+                            <form action="#" th:href="@{/webapp/domains/getAllDomains}" method="POST">
                                 <input type="hidden" name="uriDomain" th:value="${domain.url}" />
                                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Deseja realmente excluir esse registro?');"><i >Excluir</i></button>
                             </form>
@@ -82,6 +82,9 @@
             </table>
         </div>
     </section>
+</div>
+<div class="container"  align="right">
+    <a class="btn btn-primary" th:href="@{/webapp/domains/create}" href="/webapp/domains/create" role="button">Novo</a>
 </div>
 
 </body>
