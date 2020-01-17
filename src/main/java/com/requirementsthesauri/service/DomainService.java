@@ -64,6 +64,44 @@ public class DomainService {
         String output = new String(outputStream.toByteArray());
         return new ResponseEntity<>(output, HttpStatus.CREATED);
     }
+
+    public ResponseEntity<?> createDomain1(List<Domain> domainsList) throws Exception {
+
+        authentication.getAuthentication();
+
+        int TAM = domainsList.size();
+        JsonArrayBuilder jsonArrayAdd = Json.createArrayBuilder();
+        String uri = "localhost:8080/requirementsThesauri/domains/";
+
+        for (int i = 0; i < TAM; i++) {
+            String domainID = domainsList.get(i).getDomainID();
+            String label = domainsList.get(i).getLabel();
+            String prefLabel = domainsList.get(i).getPrefLabel();
+            String altLabel = domainsList.get(i).getAltLabel();
+            String description = domainsList.get(i).getDescription();
+            String linkDBpedia = domainsList.get(i).getLinkDbpedia();
+            String broaderDomainID = domainsList.get(i).getBroaderDomainID();
+            List<String> narrowerDomainID = domainsList.get(i).getNarrowerDomainID();
+            List<String> narrowerRequirementID = domainsList.get(i).getNarrowerRequirementID();
+
+
+            String queryUpdate = methodsDomainSPARQL.insertDomainSparql1(domainID, label, prefLabel, altLabel, description, linkDBpedia,
+                    broaderDomainID, narrowerDomainID, narrowerRequirementID);
+
+            UpdateRequest request = UpdateFactory.create(queryUpdate);
+            UpdateProcessor up = UpdateExecutionFactory.createRemote(request, agUtils.sparqlEndpoint);
+            up.execute();
+
+            jsonArrayAdd.add(uri + domainID);
+
+        }
+        JsonArray ja = jsonArrayAdd.build();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JsonWriter writer = Json.createWriter(outputStream);
+        writer.writeArray(ja);
+        String output = new String(outputStream.toByteArray());
+        return new ResponseEntity<>(output, HttpStatus.CREATED);
+    }
 //        AGModel model = agUtils.getAGModel();
 //
 //        int TAM = domainsList.size();

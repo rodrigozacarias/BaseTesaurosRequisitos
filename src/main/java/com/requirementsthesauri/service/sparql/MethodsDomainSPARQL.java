@@ -5,8 +5,44 @@ import java.util.List;
 public class MethodsDomainSPARQL {
 
 
-
     public String insertDomainSparql(String domainID, String label, String prefLabel, String altLabel, String description,
+                                      String linkDbpedia, String broaderDomainID, List<String> narrowerDomainID, List<String> narrowerRequirementID) {
+        String queryInsert = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX dbr: <http://dbpedia.org/resource/>\n" +
+                "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
+                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
+                "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
+                "INSERT DATA\n" +
+                "{\n" +
+                "  dom:" + domainID + " 	rdf:type		skos:Concept ;\n" +
+                "                schema:url	dom:" + domainID + " ;\n" +
+                "                rdfs:label	\"" + label + "\" ;\n" +
+                "                skos:preLabel	\"" + prefLabel + "\" ;\n" +
+                "                skos:altLabel	\"" + altLabel + "\" ;\n" +
+                "                skos:note	\"" + description + "\" ;\n" +
+                "                owl:sameAs	<" + linkDbpedia + "> ;\n" +
+                "                skos:broader	<" + broaderDomainID + "> ;\n" +
+                "                rdfs:subClassOf	<" + broaderDomainID + "> ;\n";
+        if (!narrowerDomainID.isEmpty()) {
+            for (String nd : narrowerDomainID) {
+                queryInsert = queryInsert + "                skos:narrower	<" + nd + "> ;\n";
+            }
+        }
+        if (!narrowerRequirementID.isEmpty()) {
+            for (String nr : narrowerRequirementID) {
+
+                queryInsert = queryInsert + "                skos:narrower	<" + nr + "> ;\n";
+            }
+        }
+        queryInsert = queryInsert + ".\n }";
+        return queryInsert;
+
+    }
+
+    public String insertDomainSparql1(String domainID, String label, String prefLabel, String altLabel, String description,
                                      String linkDbpedia, String broaderDomainID, List<String> narrowerDomainID, List<String> narrowerRequirementID) {
         String queryInsert = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +

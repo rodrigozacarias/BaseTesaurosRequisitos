@@ -45,7 +45,7 @@ public class DomainController {
     public ResponseEntity<?> createDomain(@RequestBody Domain domain) throws Exception {
         List<Domain> domains  = new ArrayList<>();
         domains.add(domain);
-        return domainService.createDomain(domains);
+        return domainService.createDomain1(domains);
     }
 
     @PutMapping(value = "/{domainID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

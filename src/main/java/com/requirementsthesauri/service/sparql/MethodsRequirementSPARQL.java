@@ -66,7 +66,7 @@ public class MethodsRequirementSPARQL {
         return querySelect;
     }
 
-    public String getRequirementSparqlSelect(String requirementID) {
+    public String getRequirementSparqlSelect(String requirementURI) {
         String query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -77,7 +77,7 @@ public class MethodsRequirementSPARQL {
                 "\n" +
                 "WHERE{\n" +
                 "\n" +
-                "  req:"+ requirementID +" 	rdf:type		skos:Concept ;\n" +
+                "<"+requirementURI+"> 	rdf:type		skos:Concept ;\n" +
                 "                schema:url	?url ;\n" +
                 "                rdfs:label	?label ;\n" +
                 "                dcmitype:language	?language ;\n" +
