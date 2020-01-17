@@ -40,10 +40,12 @@
 
 <div class="container">
 
-    <form action="#" id="formulario-cadastro" th:action="@{/webapp/domains/createDomain}" th:object="${domain}" method="POST">
+    <form id="formulario-cadastro" th:action="@{/webapp/domains/create}" th:object="${domain}" method="POST">
         <div class="form-group">
-            <label for="input-label">Nome</label>
-            <input type="text" class="form-control" id="input-label" th:field="*{label}">
+            <label for="label">Nome</label>
+            <input type="text" class="form-control" id="label" th:field="*{label}" >
+            <label for="prefLabel">Nome preferencial</label>
+            <input type="text" class="form-control" id="prefLabel" th:field="*{prefLabel}" >
         </div>
         <div>
             <button type="submit" class="btn btn-primary" ><i >Salvar</i></button>

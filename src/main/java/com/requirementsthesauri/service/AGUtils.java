@@ -3,6 +3,8 @@ package com.requirementsthesauri.service;
 import com.franz.agraph.jena.AGGraph;
 import com.franz.agraph.jena.AGModel;
 
+import java.text.Normalizer;
+
 public class AGUtils {
 
     Authentication authentication = new Authentication();
@@ -45,5 +47,10 @@ public class AGUtils {
         return format;
     }
 
+    public String removeAccents(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD);
+        str = str.replaceAll("[^\\p{ASCII}]", "");
+        return str;
+    }
 
 }
