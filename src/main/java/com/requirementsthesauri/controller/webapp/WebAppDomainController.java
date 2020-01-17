@@ -54,7 +54,7 @@ public class WebAppDomainController {
         }
         domain.setDomainID(agUtils.removeAccents(domain.getLabel()));
 
-        domain.getDomainID().concat(domain.getDomainID()
+        domain.getDomainID().concat(domain.getDomainID());
 
         model.addAttribute("domain", domain);
 
