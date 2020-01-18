@@ -37,7 +37,7 @@ public class DomainController {
     @PostMapping(path = "/createDomainsList", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createDomainList(@RequestBody List<Domain> domains) throws Exception {
-        return domainService.createDomain(domains);
+        return domainService.createDomain1(domains);
     }
 
     @PostMapping(path = "/createDomain", consumes = MediaType.APPLICATION_JSON_VALUE,

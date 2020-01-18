@@ -63,15 +63,15 @@
                         <td th:text="${domain.url}" ></td>
 
                         <td>
-                            <!-- REALIZANDO A REQUEST PARA EDITAR UM CADASTRO -->
-                            <form action="#"  method="get">
+<!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/domains/getDomain}" method="POST">
                                 <input type="hidden" name="uriDomain" th:value="${domain.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Detalhar</i></button>
                             </form>
                         </td>
                         <td>
                             <!-- EXCLUINDO UM REGISTRO CADASTRADO -->
-                            <form action="#" th:href="@{/webapp/domains/getAllDomains}" method="POST">
+                            <form th:action="@{/webapp/domains/delete}" method="POST">
                                 <input type="hidden" name="uriDomain" th:value="${domain.url}" />
                                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Deseja realmente excluir esse registro?');"><i >Excluir</i></button>
                             </form>

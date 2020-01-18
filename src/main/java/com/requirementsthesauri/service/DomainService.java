@@ -159,7 +159,7 @@ public class DomainService {
 //        return new ResponseEntity<>(output, HttpStatus.CREATED);
 //    }
 
-    public Model getDomain(String domainURI) throws Exception {
+    public Model getDomainModel(String domainURI) throws Exception {
 
             authentication.getAuthentication();
 
@@ -195,9 +195,44 @@ public class DomainService {
 
     }
 
+    public Domain getDomain(String domainURI) throws Exception {
+
+        Model model = getDomainModel(domainURI);
+
+        String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(domainURI);
+        Query sparql = QueryFactory.create(qSelect);
+        QueryExecution qe = QueryExecutionFactory.create(sparql, model);
+
+        QuerySolution solution= qe.execSelect().nextSolution();
+
+        Domain domain = new Domain();
+
+        domain.setUrl(solution.getResource("url").toString());
+        domain.setLabel(solution.getLiteral("label").toString());
+        domain.setPrefLabel(solution.getLiteral("prefLabel").toString());
+        domain.setAltLabel(solution.getLiteral("altLabel").toString());
+        domain.setDescription(solution.getLiteral("description").toString());
+        domain.setLinkDbpedia(solution.getResource("linkDbpedia").toString());
+        domain.setBroaderDomainID(solution.getResource("broaderDomainID").toString());
+
+
+
+        NodeIterator nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "narrower"));
+
+        while (nodes.hasNext()){
+                   RDFNode node = nodes.nextNode();
+
+                    System.out.println(node.toString());
+                }
+
+
+
+        return  domain;
+    }
+
     public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
 
-        Model fakeModel = getDomain(agUtils.uriDom + domainID);
+        Model fakeModel = getDomainModel(agUtils.uriDom + domainID);
 
         String format = agUtils.convertFromAcceptToFormat(accept);
         OutputStream stream = new ByteArrayOutputStream();
@@ -229,7 +264,7 @@ public class DomainService {
             String uri = results.nextSolution().getResource(c).getURI();
             if(uri.contains("domains")) {
 
-                Model model = getDomain(uri);
+                Model model = getDomainModel(uri);
 
                 String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(uri);
                 Query queryS = QueryFactory.create(qSelect);
@@ -431,7 +466,7 @@ public class DomainService {
             String uri = results.nextSolution().getResource(c).getURI();
             if(uri.contains("domains")) {
 
-                Model model = getDomain(uri);
+                Model model = getDomainModel(uri);
 
                 String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(uri);
                 Query queryS = QueryFactory.create(qSelect);

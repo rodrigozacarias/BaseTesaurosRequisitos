@@ -31,7 +31,7 @@ public class WebAppDomainController {
         return new ModelAndView("domain");
     }
 
-    @PostMapping("/getAllDomains")
+    @PostMapping("/delete")
     public ModelAndView deleteDomain(@RequestParam(value = "uriDomain") String domainURI, Model model) throws Exception {
         domainService.deleteDomain(domainURI);
 
@@ -67,6 +67,18 @@ public class WebAppDomainController {
 
         return new ModelAndView("redirect:getAllDomains");
     }
+
+    @PostMapping(value = "/getDomain")
+    public ModelAndView getDomain(@RequestParam(value = "uriDomain") String domainURI, Model model) throws Exception {
+
+
+
+        model.addAttribute("domain", domainService.getDomain(domainURI));
+
+        return new ModelAndView("getDomain");
+    }
+
+
 }
 
 
