@@ -53,6 +53,16 @@ public class WebAppDomainController {
     @PostMapping("/create")
     public ModelAndView createNewDomain(@ModelAttribute Domain domain, BindingResult bindingResult, Model model) throws Exception {
 
+        if(domain.getBroaderDomainID().equals("")){
+            domain.setBroaderDomainID(null);
+        }
+        if(domain.getNarrowerDomainID().isEmpty()){
+            domain.getNarrowerDomainID().add(null);
+        }
+        if(domain.getNarrowerRequirementID().isEmpty()){
+            domain.getNarrowerRequirementID().add(null);
+        }
+
         if (bindingResult.hasErrors()) {
             //errors processing
         }
@@ -65,20 +75,69 @@ public class WebAppDomainController {
 
         model.addAttribute("domain", domainService.createDomain(domains));
 
+
         return new ModelAndView("redirect:getAllDomains");
     }
 
     @PostMapping(value = "/getDomain")
-    public ModelAndView getDomain(@RequestParam(value = "uriDomain") String domainURI, Model model) throws Exception {
+    public ModelAndView getDomain(@RequestParam(value = "uriDomain") String domainURI,  Model model) throws Exception {
 
+        if(domainURI.contains("dbpedia")){
+            return new ModelAndView (domainURI);
+        }else {
 
+            Domain domain = domainService.getDomain(domainURI);
 
-        model.addAttribute("domain", domainService.getDomain(domainURI));
+            model.addAttribute("domain", domain);
 
-        return new ModelAndView("getDomain");
+            model.addAttribute("broaderNarrower", domainService.getDomainNarrowerOrBroader(domain.getBroaderDomains()));
+            model.addAttribute("domainNarrower", domainService.getDomainNarrowerOrBroader(domain.getNarrowerDomainID()));
+            model.addAttribute("requirementNarrower", requirementService.getRequirementNarrower(domain.getNarrowerRequirementID()));
+
+            return new ModelAndView("getDomain");
+        }
     }
 
 
+    @PostMapping(value = "/editDomain")
+    public ModelAndView editDomain(@RequestParam(value = "uriDomain") String domainURI,  Model model) throws Exception {
+
+        Domain domain = domainService.getDomain(domainURI);
+
+        model.addAttribute("domain", domain);
+        model.addAttribute("allDomains", domainService.getAllDomains());
+        model.addAttribute("allRequirements", requirementService.getAllRequirements());
+
+            return new ModelAndView("editDomain");
+
+    }
+
+    @PostMapping("/edit")
+    public ModelAndView editOldDomain(@ModelAttribute Domain domain, @RequestParam(value = "uriDomain") String domainURI,  BindingResult bindingResult, Model model) throws Exception {
+
+        if(domain.getBroaderDomainID().equals("")){
+            domain.setBroaderDomainID(null);
+        }
+        if(domain.getNarrowerDomainID().isEmpty()){
+            domain.getNarrowerDomainID().add(null);
+        }
+        if(domain.getNarrowerRequirementID().isEmpty()){
+            domain.getNarrowerRequirementID().add(null);
+        }
+
+        domainService.deleteDomain(domainURI);
+
+
+        domain.setDomainID(agUtils.removeAccents(domain.getLabel().toLowerCase()));
+        domain.setDomainID(domain.getDomainID().replace(" ", ""));
+
+        List<Domain> domains = new ArrayList<>();
+        domains.add(domain);
+
+        model.addAttribute("domain", domainService.createDomain(domains));
+
+        return new ModelAndView("redirect:getAllDomains");
+    }
 }
 
 

@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 
-    <title>Novo Domínio</title>
+    <title>Domínio</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -43,8 +43,97 @@
     <div class="container"  align="center">
         <h1>Domínio</h1>
     </div>
+
+    <div id="formulario-cadastro" th:action="@{/webapp/domains/create}" th:object="${domain}" method="POST">
+        <div class="form-group">
+            <label for="label"><strong>Nome</strong></label>
+            <input type="text" class="form-control" id="label" th:field="*{label}" >
+        </div>
+        <div class="form-group">
+            <label for="prefLabel"><strong>Nome preferencial</strong></label>
+            <input type="text" class="form-control" id="prefLabel" th:field="*{prefLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="altLabel"><strong>Nome alternativo</strong></label>
+            <input type="text" class="form-control" id="altLabel" th:field="*{altLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="linkDbpedia"><strong>Link DBpedia</strong></label>
+            <input type="text" class="form-control" id="linkDbpedia" th:field="*{linkDbpedia}" >
+        </div>
+        <div class="form-group">
+            <label for="description"><strong>Descrição</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="description" th:field="*{description}" />
+
+        </div>
+        <div class="form-group">
+            <label><strong> Domínio Generalista (Acima)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="broaderDomainID" th:each="bDomain : ${broaderNarrower}">
+                    <tr scope="row">
+                        <td th:text="${bDomain.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/domains/getDomain}" method="POST">
+                                <input type="hidden" name="uriDomain" th:value="${bDomain.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <label><strong>Domínios Específicos (Abaixo)</strong></label>
+            <table class="table table-hover">
+                 <tbody>
+                    <th:block id="narrowerDomainID" th:each="nDomain : ${domainNarrower}">
+                        <tr scope="row">
+                            <td th:text="${nDomain.label}">
+                            </td>
+                            <td>
+                                <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                                <form th:action="@{/webapp/domains/getDomain}" method="POST">
+                                    <input type="hidden" name="uriDomain" th:value="${nDomain.url}" />
+                                    <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <label ><strong>Requisitos Específicos (Abaixo)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="narrowerRequirementID" th:each="requirement : ${requirementNarrower}">
+                    <tr scope="row">
+                        <td th:text="${requirement.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/domains/getRequirement}" method="POST">
+                                <input type="hidden" name="uriRequirement" th:value="${requirement.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
 </div>
-
-
+</div>
+<div class="container"  align="center">
+    <form th:action="@{/webapp/domains/editDomain}" th:object="${domain}" method="POST">
+        <input type="hidden" name="uriDomain" th:value="${domain.url}" />
+        <button type="submit" class="btn btn-secondary" ><i >Editar</i></button>
+    </form>
+</div>
 </body>
 </html>

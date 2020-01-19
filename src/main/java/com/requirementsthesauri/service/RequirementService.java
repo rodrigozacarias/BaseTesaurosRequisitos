@@ -4,10 +4,9 @@ import com.franz.agraph.jena.*;
 import com.requirementsthesauri.model.Domain;
 import com.requirementsthesauri.model.Requirement;
 import com.requirementsthesauri.service.sparql.MethodsRequirementSPARQL;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -144,7 +143,7 @@ public class RequirementService {
 //        return new ResponseEntity<>(output, HttpStatus.CREATED);
 //    }
 
-    public Model getRequirement(String requirementID) throws Exception {
+    public Model getRequirementModel(String requirementID) throws Exception {
         authentication.getAuthentication();
 
 
@@ -164,7 +163,7 @@ public class RequirementService {
         fakeModel.setNsPrefix("uriSys", agUtils.uriSys);
 
 
-        String queryString = "Describe <" + agUtils.uriReq + requirementID + "> ?s ?p ?o ";
+        String queryString = "Describe <" + requirementID + "> ?s ?p ?o ";
 
         AGReasoner reasoner = new AGReasoner();
         AGInfModel infmodel = new AGInfModel(reasoner, model);
@@ -179,6 +178,89 @@ public class RequirementService {
 
         return fakeModel;
 
+    }
+
+    public Requirement getRequirement(String requirementURI) throws Exception {
+        Model model = getRequirementModel(requirementURI);
+
+     
+
+
+        Requirement requirement;
+        try {
+
+            String querySelect = methodsRequirementSPARQL.getRequirementSparqlSelect(requirementURI);
+            Query sparql = QueryFactory.create(querySelect);
+            QueryExecution qe = QueryExecutionFactory.create(sparql, model);
+
+            requirement = new Requirement();
+
+            QuerySolution soln= qe.execSelect().nextSolution();
+            requirement.setUrl(soln.getResource("url").toString());
+            requirement.setLabel(soln.getLiteral("label").toString());
+            requirement.setLanguage(soln.getLiteral("language").toString());
+            requirement.setPrefLabel(soln.getLiteral("prefLabel").toString());
+            requirement.setAltLabel(soln.getLiteral("altLabel").toString());
+            requirement.setProblem(soln.getLiteral("problem").toString());
+            requirement.setContext(soln.getLiteral("context").toString());
+            requirement.setTemplate(soln.getLiteral("template").toString());
+            requirement.setExample(soln.getLiteral("example").toString());
+
+
+            NodeIterator nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "broader"));
+
+            List<String> broaderDomainID = new ArrayList<>();
+            List<String>  broaderSystemTypeID = new ArrayList<>();
+
+
+            while(nodes.hasNext()) {
+                String uri = nodes.nextNode().toString();
+                if(uri.contains("domains")) {
+                    broaderDomainID.add(uri);
+                }else if(uri.contains("systemTypes")){
+                    broaderSystemTypeID.add(uri);
+                }else if(uri.contains("requirementTypes")) {
+                   requirement.setBroaderRequirementTypeID(uri);
+                }else if(uri.contains("requirements/")) {
+                    requirement.setBroaderRequirementID(uri);
+                }
+            }
+
+            nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "narrower"));
+
+            List<String>  narrowerRequirementID = new ArrayList<>();
+
+            while(nodes.hasNext()) {
+                narrowerRequirementID.add(nodes.nextNode().toString());
+            }
+
+            requirement.setBroaderDomainID(broaderDomainID);
+            requirement.setBroaderSystemTypeID(broaderSystemTypeID);
+            requirement.setNarrowerRequirementID(narrowerRequirementID);
+
+            return requirement;
+
+        }catch (Exception e){
+
+            requirement = new Requirement();
+            requirement.setLabel(requirementURI);
+            requirement.setUrl(requirementURI);
+            return requirement;
+        }
+    }
+
+    public List<Requirement> getRequirementNarrower(List<String> requirementURI) throws Exception {
+
+        List<Requirement> requirements = new ArrayList<>();
+        Requirement requirement;
+        for(String uri: requirementURI) {
+            requirement = getRequirement(uri);
+            if(!requirement.getLabel().contains("localhost")) {
+                requirements.add(requirement);
+            }
+
+        }
+        return requirements;
     }
 
     public ResponseEntity<?> getRequirement1(String requirementID, String accept) throws Exception {
@@ -272,7 +354,7 @@ public class RequirementService {
             String uri = results.nextSolution().getResource(c).getURI();
             if (uri.contains("requirements/")) {
 
-                Model model = getRequirement(uri);
+                Model model = getRequirementModel(uri);
 
                 String qSelect = methodsRequirementSPARQL.getRequirementSparqlSelect(uri);
                 Query queryS = QueryFactory.create(qSelect);

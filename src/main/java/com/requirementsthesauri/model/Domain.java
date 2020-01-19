@@ -17,6 +17,7 @@ public class Domain {
     private String description;
     private String linkDbpedia;
     private String broaderDomainID;
+    private List<String> broaderDomains;
     private List<String> narrowerDomainID;
     private List<String> narrowerRequirementID;
 
@@ -101,5 +102,13 @@ public class Domain {
 
     public void setBroaderDomainID(String broaderDomainID) {
         this.broaderDomainID = broaderDomainID;
+    }
+
+    public List<String> getBroaderDomains() {
+        return broaderDomains;
+    }
+
+    public void setBroaderDomains(List<String> broaderDomains) {
+        this.broaderDomains = broaderDomains;
     }
 }

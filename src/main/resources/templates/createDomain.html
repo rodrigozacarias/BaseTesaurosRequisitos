@@ -9,7 +9,7 @@
     <link  rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css"/>
     <link  rel="stylesheet" th:href="@{/css/sistema.css}" href="../static/css/sistema.css"/>
 
-    <script type="text/javascript" th:src="../static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 
     <title>Novo Domínio</title>
 </head>
@@ -46,41 +46,41 @@
 
     <form id="formulario-cadastro" th:action="@{/webapp/domains/create}" th:object="${domain}" method="POST">
         <div class="form-group">
-            <label for="label">Nome</label>
+            <label for="label"><strong>Nom</strong></label>
             <input type="text" class="form-control" id="label" th:field="*{label}" >
         </div>
         <div class="form-group">
-            <label for="prefLabel">Nome preferencial</label>
+            <label for="prefLabel"><strong>Nome preferencial</strong></label>
             <input type="text" class="form-control" id="prefLabel" th:field="*{prefLabel}" >
         </div>
         <div class="form-group">
-            <label for="altLabel">Nome alternativo</label>
+            <label for="altLabel"><strong>Nome alternativo</strong></label>
             <input type="text" class="form-control" id="altLabel" th:field="*{altLabel}" >
         </div>
         <div class="form-group">
-            <label for="linkDbpedia">Link DBpedia</label>
+            <label for="linkDbpedia"><strong>Link DBpedia</strong></label>
             <input type="text" class="form-control" id="linkDbpedia" th:field="*{linkDbpedia}" >
         </div>
         <div class="form-group">
-            <label for="description">Descrição</label>
+            <label for="description"><strong>Descrição</strong></label>
             <textarea type="text" class="form-control" rows="4" id="description" th:field="*{description}" />
         </div>
         <div class="form-group">
-            <label for="broaderDomainID">Domínio Generalista (Acima)</label>
+            <label for="broaderDomainID"><strong>Domínio Generalista (Acima)</strong></label>
             <select class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderDomainID" th:field="*{broaderDomainID}">
                 <option value=""> -- </option>
                 <option th:each="bdDomain : ${allDomains}" th:value="${bdDomain.url}" th:text="${bdDomain.label}"/>
             </select>
         </div>
         <div class="form-group">
-            <label for="narrowerDomainID">Domínios Específicos (Abaixo)</label>
+            <label for="narrowerDomainID"><strong>Domínios Específicos (Abaixo)</strong></label>
             <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="narrowerDomainID" th:field="*{narrowerDomainID}">
                 <option value=""> -- </option>
                 <option th:each="nrDomain : ${allDomains}" th:value="${nrDomain.url}" th:text="${nrDomain.label}"/>
             </select>
         </div>
         <div class="form-group">
-            <label for="narrowerRequirementID">Requisitos Específicos (Abaixo)</label>
+            <label for="narrowerRequirementID"><strong>Requisitos Específicos (Abaixo)</strong></label>
             <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="narrowerRequirementID" th:field="*{narrowerRequirementID}">
                 <option value=""> -- </option>
                 <option th:each="nrReq : ${allRequirements}" th:value="${nrReq.url}" th:text="${nrReq.label}"/>

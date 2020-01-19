@@ -23,19 +23,31 @@ public class MethodsDomainSPARQL {
                 "                skos:preLabel	\"" + prefLabel + "\" ;\n" +
                 "                skos:altLabel	\"" + altLabel + "\" ;\n" +
                 "                skos:note	\"" + description + "\" ;\n" +
-                "                owl:sameAs	<" + linkDbpedia + "> ;\n" +
-                "                skos:broader	<" + broaderDomainID + "> ;\n" +
+                "                owl:sameAs	<" + linkDbpedia + "> ;\n" ;
+        if(broaderDomainID==null){
+            queryInsert = queryInsert + "                skos:broader	dom:"+broaderDomainID+" ;\n" +
+                    "                rdfs:subClassOf	dom:"+broaderDomainID+" ;\n";
+        }else{
+            queryInsert = queryInsert +   "                skos:broader	<" + broaderDomainID + "> ;\n" +
                 "                rdfs:subClassOf	<" + broaderDomainID + "> ;\n";
+        }
         if (!narrowerDomainID.isEmpty()) {
-            for (String nd : narrowerDomainID) {
-                queryInsert = queryInsert + "                skos:narrower	<" + nd + "> ;\n";
+            for (String nd: narrowerDomainID){
+                if(nd==null){
+                    queryInsert = queryInsert + "                skos:narrower	dom:"+nd+" ;\n";
+                }else{
+                    queryInsert = queryInsert + "                skos:narrower	<" + nd + "> ;\n";
+                }
             }
         }
         if (!narrowerRequirementID.isEmpty()) {
-            for (String nr : narrowerRequirementID) {
-
-                queryInsert = queryInsert + "                skos:narrower	<" + nr + "> ;\n";
-            }
+                for (String nr: narrowerRequirementID) {
+                    if (nr == null) {
+                        queryInsert = queryInsert + "                skos:narrower	req:" + nr + " ;\n";
+                    } else {
+                        queryInsert = queryInsert + "                skos:narrower	<" + nr + "> ;\n";
+                    }
+                }
         }
         queryInsert = queryInsert + ".\n }";
         return queryInsert;

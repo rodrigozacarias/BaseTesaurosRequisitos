@@ -107,7 +107,7 @@ public class SystemTypeService {
         fakeModel.setNsPrefix("uriReq", agUtils.uriReq);
 
 
-        String queryString = "Describe <" + agUtils.uriSys + systemTypeID + "> ?s ?p ?o ";
+        String queryString = "Describe <" + systemTypeID + "> ?s ?p ?o ";
 
         AGReasoner reasoner = new AGReasoner();
         AGInfModel infmodel = new AGInfModel(reasoner, model);

@@ -107,7 +107,7 @@ public class RequirementTypeService {
         fakeModel.setNsPrefix("uriReq", agUtils.uriReq);
 
 
-        String queryString = "Describe <" + agUtils.uriRqt + requirementTypeID + "> ?s ?p ?o ";
+        String queryString = "Describe <" + requirementTypeID + "> ?s ?p ?o ";
 
         AGReasoner reasoner = new AGReasoner();
         AGInfModel infmodel = new AGInfModel(reasoner, model);

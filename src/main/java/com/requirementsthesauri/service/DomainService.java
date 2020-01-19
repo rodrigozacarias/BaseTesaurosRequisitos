@@ -199,38 +199,91 @@ public class DomainService {
 
         Model model = getDomainModel(domainURI);
 
-        String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(domainURI);
-        Query sparql = QueryFactory.create(qSelect);
-        QueryExecution qe = QueryExecutionFactory.create(sparql, model);
+        Domain domain;
 
-        QuerySolution solution= qe.execSelect().nextSolution();
+        try {
+            String qSelect = methodsDomainSPARQL.getDomainSparqlSelect(domainURI);
+            Query sparql = QueryFactory.create(qSelect);
+            QueryExecution qe = QueryExecutionFactory.create(sparql, model);
 
-        Domain domain = new Domain();
+            QuerySolution solution= qe.execSelect().nextSolution();
 
-        domain.setUrl(solution.getResource("url").toString());
-        domain.setLabel(solution.getLiteral("label").toString());
-        domain.setPrefLabel(solution.getLiteral("prefLabel").toString());
-        domain.setAltLabel(solution.getLiteral("altLabel").toString());
-        domain.setDescription(solution.getLiteral("description").toString());
-        domain.setLinkDbpedia(solution.getResource("linkDbpedia").toString());
-        domain.setBroaderDomainID(solution.getResource("broaderDomainID").toString());
+            domain = new Domain();
+
+            domain.setUrl(solution.getResource("url").toString());
+            domain.setLabel(solution.getLiteral("label").toString());
+            domain.setPrefLabel(solution.getLiteral("prefLabel").toString());
+            domain.setAltLabel(solution.getLiteral("altLabel").toString());
+            domain.setDescription(solution.getLiteral("description").toString());
+            domain.setLinkDbpedia(solution.getResource("linkDbpedia").toString());
 
 
 
-        NodeIterator nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "narrower"));
 
-        while (nodes.hasNext()){
-                   RDFNode node = nodes.nextNode();
+            NodeIterator nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "narrower"));
 
-                    System.out.println(node.toString());
+            List<String> narrowerDomainID = new ArrayList<>();
+            List<String> narrowerRequirementID = new ArrayList<>();
+            List<String> broaderDomain = new ArrayList<>();
+
+            while (nodes.hasNext()){
+                RDFNode node = nodes.nextNode();
+
+                if(node.toString().contains("requirements/")) {
+                    narrowerRequirementID.add(node.toString());
+                }else {
+                    narrowerDomainID.add(node.toString());
                 }
+//                System.out.println(node.toString());
+
+            }
+
+            nodes = model.listObjectsOfProperty(model.getProperty(model.getNsPrefixURI("skos") + "broader"));
+
+            while (nodes.hasNext()){
+                RDFNode node = nodes.nextNode();
+                broaderDomain.add(node.toString());
+            }
+
+            domain.setNarrowerDomainID(narrowerDomainID);
+            domain.setNarrowerRequirementID(narrowerRequirementID);
+            domain.setBroaderDomains(broaderDomain);
 
 
 
-        return  domain;
+            return  domain;
+        }catch (Exception e){
+            domain = new Domain();
+            domain.setLabel(domainURI);
+            domain.setUrl(domainURI);
+            return domain;
+        }
+
     }
 
-    public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
+    public List<Domain> getDomainNarrowerOrBroader(List<String> domainURI) throws Exception {
+
+        List<Domain> domains = new ArrayList<>();
+        Domain domain;
+        for(String uri: domainURI) {
+            if (uri.contains("dbpedia")) {
+                domain = new Domain();
+                domain.setLabel(uri);
+                domain.setUrl(uri);
+                domains.add(domain);
+            } else {
+                domain = getDomain(uri);
+                if(!domain.getLabel().contains("localhost")) {
+                    domains.add(domain);
+                }
+            }
+        }
+        return domains;
+    }
+
+
+
+        public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
 
         Model fakeModel = getDomainModel(agUtils.uriDom + domainID);
 

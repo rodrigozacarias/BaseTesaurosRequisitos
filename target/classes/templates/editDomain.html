@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 
-    <title>Novo Domínio</title>
+    <title>Editar Domínio</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -41,10 +41,10 @@
 <div class="container p-3 mb-2 bg-light text-dark">
 
     <div class="container"  align="center">
-        <h1>Novo Domínio</h1>
+        <h1>Editar Domínio</h1>
     </div>
 
-    <form id="formulario-cadastro" th:action="@{/webapp/domains/create}" th:object="${domain}" method="POST">
+    <form id="formulario-cadastro" th:action="@{/webapp/domains/edit}" th:object="${domain}" method="POST">
         <div class="form-group">
             <label for="label"><strong>Nom</strong></label>
             <input type="text" class="form-control" id="label" th:field="*{label}" >
@@ -88,11 +88,13 @@
         </div>
 
         <div>
+            <input type="hidden" name="uriDomain" th:value="*{url}" />
             <button type="submit" class="btn btn-primary" ><i >Salvar</i></button>
         </div>
     </form>
 
 </div>
+
 
 </body>
 </html>
