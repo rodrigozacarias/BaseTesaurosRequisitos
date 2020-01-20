@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="Web Service Semântico de Requisitos"/>
+    <meta name="author" content="Rodrigo"/>
+
+    <link  rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css"/>
+    <link  rel="stylesheet" th:href="@{/css/sistema.css}" href="../static/css/sistema.css"/>
+
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+
+    <title>Novo Requisito</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Tesauros</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/requirements/getAllRequirements}" href="/webapp/systemTypes/getAllRequirements">Requisitos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/domains/getAllDomains}" href="/webapp/domains/getAllDomains">Domínios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/requirementTypes/getAllRequirementTypes}" href="/webapp/requirementTypes/getAllRequirementTypes">Tipos de Requisitos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/systemTypes/getAllSystemTypes}" href="/webapp/systemTypes/getAllSystemTypes">Tipos de Sistemas</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/><br/>
+
+<div class="container p-3 mb-2 bg-light text-dark">
+
+    <div class="container"  align="center">
+        <h1>Novo Requisito</h1>
+    </div>
+
+    <form id="formulario-cadastro" th:action="@{/webapp/requirements/create}" th:object="${requirement}" method="POST">
+        <div class="form-group">
+            <label for="label"><strong>Nome</strong></label>
+            <input type="text" class="form-control" id="label" th:field="*{label}" >
+        </div>
+        <div class="form-group">
+            <label for="prefLabel"><strong>Nome preferencial</strong></label>
+            <input type="text" class="form-control" id="prefLabel" th:field="*{prefLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="altLabel"><strong>Nome alternativo</strong></label>
+            <input type="text" class="form-control" id="altLabel" th:field="*{altLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="language"><strong>Idioma</strong></label>
+            <input type="text" class="form-control" id="language" th:field="*{language}" >
+        </div>
+        <div class="form-group">
+            <label for="problem"><strong>Problema</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="problem" th:field="*{problem}" />
+        </div>
+        <div class="form-group">
+            <label for="context"><strong>Contexto</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="context" th:field="*{context}" />
+        </div>
+        <div class="form-group">
+            <label for="template"><strong>Modelo (Template)</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="template" th:field="*{template}" />
+        </div>
+        <div class="form-group">
+            <label for="example"><strong>Exemplo</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="example" th:field="*{example}" />
+        </div>
+        <div class="form-group">
+            <label for="broaderRequirementTypeID"><strong>Tipo de Requisito Generalista (Acima)</strong></label>
+            <select class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderRequirementTypeID" th:field="*{broaderRequirementTypeID}">
+                <option value=""> -- </option>
+                <option th:each="bdRequirementType : ${allRequirementTypes}" th:value="${bdRequirementType.url}" th:text="${bdRequirementType.label}"/>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="broaderRequirementID"><strong>Requisito Generalista (Acima)</strong></label>
+            <select class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderRequirementID" th:field="*{broaderRequirementID}">
+                <option value=""> -- </option>
+                <option th:each="bdRequirement : ${allRequirements}" th:value="${bdRequirement.url}" th:text="${bdRequirement.label}"/>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="broaderDomainID"><strong>Domínios Generalistas (Acima)</strong></label>
+            <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderDomainID" th:field="*{broaderDomainID}">
+                <option value=""> -- </option>
+                <option th:each="bDomain : ${allDomains}" th:value="${bDomain.url}" th:text="${bDomain.label}"/>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="broaderSystemTypeID"><strong>Tipos de Sistema Generalistas (Acima)</strong></label>
+            <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderSystemTypeID" th:field="*{broaderSystemTypeID}">
+                <option value=""> -- </option>
+                <option th:each="bSystem : ${allSystemTypes}" th:value="${bSystem.url}" th:text="${bSystem.label}"/>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="narrowerRequirementID"><strong>Requisitos Específicos (Abaixo)</strong></label>
+            <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="narrowerRequirementID" th:field="*{narrowerRequirementID}">
+                <option value=""> -- </option>
+                <option th:each="nrReq : ${allRequirements}" th:value="${nrReq.url}" th:text="${nrReq.label}"/>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary" ><i >Salvar</i></button>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -29,7 +29,7 @@ public class RequirementController {
             "application/turtle",
             "application/rdf+json"})
     public ResponseEntity<?> getRequirement(@PathVariable(value="requirementID") String requirementID, @RequestHeader("Accept") String accept) throws Exception {
-        return requirementService.getRequirement1(requirementID, accept);
+        return requirementService.getRequirementDescribe(requirementID, accept);
     }
 
     @PostMapping(path = "/createRequirementsList", consumes = MediaType.APPLICATION_JSON_VALUE,

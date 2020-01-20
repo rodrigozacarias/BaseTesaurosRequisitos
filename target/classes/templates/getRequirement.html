@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="Web Service Semântico de Requisitos"/>
+    <meta name="author" content="Rodrigo"/>
+
+    <link  rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css"/>
+    <link  rel="stylesheet" th:href="@{/css/sistema.css}" href="../static/css/sistema.css"/>
+
+    <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+
+    <title>Requisito</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Tesauros</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/requirements/getAllRequirements}" href="/webapp/systemTypes/getAllRequirements">Requisitos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/domains/getAllDomains}" href="/webapp/domains/getAllDomains">Domínios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/requirementTypes/getAllRequirementTypes}" href="/webapp/requirementTypes/getAllRequirementTypes">Tipos de Requisitos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/webapp/systemTypes/getAllSystemTypes}" href="/webapp/systemTypes/getAllSystemTypes">Tipos de Sistemas</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/><br/>
+
+<div class="container p-3 mb-2 bg-light text-dark">
+
+    <div class="container"  align="center">
+        <h1>Requisito</h1>
+    </div>
+
+    <div id="formulario-cadastro" th:action="@{/webapp/requirements/create}" th:object="${requirement}" method="POST">
+        <div class="form-group">
+            <label for="label"><strong>Nome</strong></label>
+            <input type="text" class="form-control" id="label" th:field="*{label}" >
+        </div>
+        <div class="form-group">
+            <label for="prefLabel"><strong>Nome preferencial</strong></label>
+            <input type="text" class="form-control" id="prefLabel" th:field="*{prefLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="altLabel"><strong>Nome alternativo</strong></label>
+            <input type="text" class="form-control" id="altLabel" th:field="*{altLabel}" >
+        </div>
+        <div class="form-group">
+            <label for="language"><strong>Idioma</strong></label>
+            <input type="text" class="form-control" id="language" th:field="*{language}" >
+        </div>
+        <div class="form-group">
+            <label for="problem"><strong>Problema</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="problem" th:field="*{problem}" />
+        </div>
+        <div class="form-group">
+            <label for="context"><strong>Contexto</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="context" th:field="*{context}" />
+        </div>
+        <div class="form-group">
+            <label for="template"><strong>Modelo (Template)</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="template" th:field="*{template}" />
+        </div>
+        <div class="form-group">
+            <label for="example"><strong>Exemplo</strong></label>
+            <textarea type="text" class="form-control" rows="4" id="example" th:field="*{example}" />
+        </div>
+        <div class="form-group">
+            <label><strong> Domínios Generalistas (Acima)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="domainBroader" th:each="bDomain : ${domainBroader}">
+                    <tr scope="row">
+                        <td th:text="${bDomain.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/domains/getDomain}" method="POST">
+                                <input type="hidden" name="uriDomain" th:value="${bDomain.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <label><strong> Tipos de Requisito Generalistas (Acima)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="requirementTypeBroader" th:each="bRequirementType : ${requirementTypeBroader}">
+                    <tr scope="row">
+                        <td th:text="${bRequirementType.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/requirementTypes/getRequirementType}" method="POST">
+                                <input type="hidden" name="uriRequirementType" th:value="${bRequirementType.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <label><strong> Tipos de Sistema Generalistas (Acima)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="systemTypeBroader" th:each="bSystemType : ${systemTypeBroader}">
+                    <tr scope="row">
+                        <td th:text="${bSystemType.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
+                                <input type="hidden" name="uriSystemType" th:value="${bSystemType.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group">
+            <label><strong> Requisitos Generalistas (Acima)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="broaderRequirementID" th:each="bRequirement : ${requirementBroader}">
+                    <tr scope="row">
+                        <td th:text="${bRequirement.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/requirements/getRequirement}" method="POST">
+                                <input type="hidden" name="uriRequirement" th:value="${bRequirement.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="form-group">
+            <label ><strong>Requisitos Específicos (Abaixo)</strong></label>
+            <table class="table table-hover">
+                <tbody>
+                <th:block id="narrowerRequirementID" th:each="requirement : ${requirementNarrower}">
+                    <tr scope="row">
+                        <td th:text="${requirement.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/requirements/getRequirement}" method="POST">
+                                <input type="hidden" name="uriRequirement" th:value="${requirement.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<div class="container"  align="center">
+    <form th:action="@{/webapp/requirements/editRequirement}" th:object="${requirement}" method="POST">
+        <input type="hidden" name="uriRequirement" th:value="${requirement.url}" />
+        <button type="submit" class="btn btn-secondary" ><i >Editar</i></button>
+    </form>
+</div>
+</body>
+</html>

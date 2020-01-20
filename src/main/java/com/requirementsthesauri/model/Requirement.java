@@ -21,6 +21,8 @@ public class Requirement {
     private String example;
     private String broaderRequirementTypeID;
     private String broaderRequirementID;
+    private List<String> broaderRequirementTypes;
+    private List<String> broaderRequirements;
     private List<String> broaderDomainID;
     private List<String> broaderSystemTypeID;
     private List<String> narrowerRequirementID;
@@ -167,5 +169,21 @@ public class Requirement {
 
     public void setNarrowerRequirementID(List<String> narrowerRequirementID) {
         this.narrowerRequirementID = narrowerRequirementID;
+    }
+
+    public List<String> getBroaderRequirementTypes() {
+        return broaderRequirementTypes;
+    }
+
+    public void setBroaderRequirementTypes(List<String> broaderRequirementTypes) {
+        this.broaderRequirementTypes = broaderRequirementTypes;
+    }
+
+    public List<String> getBroaderRequirements() {
+        return broaderRequirements;
+    }
+
+    public void setBroaderRequirements(List<String> broaderRequirements) {
+        this.broaderRequirements = broaderRequirements;
     }
 }

@@ -35,7 +35,7 @@ public class SystemTypeController {
     @PostMapping(path = "/createSystemTypesList", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createSystemTypesList(@RequestBody List<SystemType> systemTypes) throws Exception {
-        return systemTypeService.createSystemType(systemTypes);
+        return systemTypeService.createSystemType1(systemTypes);
     }
 
     @PostMapping(path = "/createSystemType", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +43,7 @@ public class SystemTypeController {
     public ResponseEntity<?> createSystemTypesList(@RequestBody SystemType systemType) throws Exception {
         List<SystemType> systemTypes  = new ArrayList<>();
         systemTypes.add(systemType);
-        return systemTypeService.createSystemType(systemTypes);
+        return systemTypeService.createSystemType1(systemTypes);
     }
 
     @PutMapping(value = "/{systemTypeID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

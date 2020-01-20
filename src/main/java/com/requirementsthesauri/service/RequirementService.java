@@ -256,7 +256,8 @@ public class RequirementService {
 
             List<String> broaderDomainID = new ArrayList<>();
             List<String>  broaderSystemTypeID = new ArrayList<>();
-
+            List<String>  broaderRequirementTypes = new ArrayList<>();
+            List<String>  broaderRequirements = new ArrayList<>();
 
             while(nodes.hasNext()) {
                 String uri = nodes.nextNode().toString();
@@ -265,9 +266,9 @@ public class RequirementService {
                 }else if(uri.contains("systemTypes")){
                     broaderSystemTypeID.add(uri);
                 }else if(uri.contains("requirementTypes")) {
-                   requirement.setBroaderRequirementTypeID(uri);
+                   broaderRequirementTypes.add(uri);
                 }else if(uri.contains("requirements/")) {
-                    requirement.setBroaderRequirementID(uri);
+                    broaderRequirements.add(uri);
                 }
             }
 
@@ -281,6 +282,8 @@ public class RequirementService {
 
             requirement.setBroaderDomainID(broaderDomainID);
             requirement.setBroaderSystemTypeID(broaderSystemTypeID);
+            requirement.setBroaderRequirementTypes(broaderRequirementTypes);
+            requirement.setBroaderRequirements(broaderRequirements);
             requirement.setNarrowerRequirementID(narrowerRequirementID);
 
             return requirement;
@@ -292,6 +295,26 @@ public class RequirementService {
             requirement.setUrl(requirementURI);
             return requirement;
         }
+    }
+
+    public List<Requirement> getRequirementNarrowerOrBroader(List<String> requirementURI) throws Exception {
+
+        List<Requirement> requirements = new ArrayList<>();
+        Requirement requirement;
+        for(String uri: requirementURI) {
+            if (uri.contains("dbpedia")) {
+                requirement = new Requirement();
+                requirement.setLabel(uri);
+                requirement.setUrl(uri);
+                requirements.add(requirement);
+            } else {
+                requirement = getRequirement(uri);
+                if(!requirement.getLabel().contains("localhost")) {
+                    requirements.add(requirement);
+                }
+            }
+        }
+        return requirements;
     }
 
     public List<Requirement> getRequirementNarrower(List<String> requirementURI) throws Exception {
@@ -352,6 +375,22 @@ public class RequirementService {
         return new ResponseEntity<>(stream.toString(), HttpStatus.OK);
 
     }
+
+    public ResponseEntity<?> getRequirementDescribe(String requirementID, String accept) throws Exception {
+
+        Model fakeModel = getRequirementModel(agUtils.uriReq+ requirementID);
+
+        String format = agUtils.convertFromAcceptToFormat(accept);
+        OutputStream stream = new ByteArrayOutputStream();
+        if (format.isEmpty()){
+            fakeModel.write(stream, "TURTLE");
+        }else {
+            fakeModel.write(stream, format);
+        }
+        
+        return new ResponseEntity<>(stream.toString(), HttpStatus.OK);
+    }
+
 
     public ResponseEntity<?> getAllRequirements1(){
         authentication.getAuthentication();
