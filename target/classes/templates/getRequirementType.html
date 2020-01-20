@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 
-    <title>Tipo de Sistema</title>
+    <title>Tipos de Requisitos</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -41,10 +41,10 @@
 <div class="container p-3 mb-2 bg-light text-dark">
 
     <div class="container"  align="center">
-        <h1>Tipo de Sistema</h1>
+        <h1>Tipo de Requisito</h1>
     </div>
 
-    <div id="formulario-cadastro" th:action="@{/webapp/systemTypes/create}" th:object="${systemType}" method="POST">
+    <div id="formulario-cadastro" th:action="@{/webapp/requirementTypes/create}" th:object="${requirementType}" method="POST">
         <div class="form-group">
             <label for="label"><strong>Nome</strong></label>
             <input type="text" class="form-control" id="label" th:field="*{label}" >
@@ -67,17 +67,17 @@
 
         </div>
         <div class="form-group">
-            <label><strong> Tipos de Sistema Generalistas (Acima)</strong></label>
+            <label><strong> Domínio Generalista (Acima)</strong></label>
             <table class="table table-hover">
                 <tbody>
-                <th:block id="broaderSystemTypeID" th:each="bSystemType : ${systemTypeBroader}">
+                <th:block id="broaderRequirementTypeID" th:each="bRequirementType : ${requirementTypeBroader}">
                     <tr scope="row">
-                        <td th:text="${bSystemType.label}">
+                        <td th:text="${bRequirementType.label}">
                         </td>
                         <td>
                             <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
-                                <input type="hidden" name="uriSystemType" th:value="${bSystemType.url}" />
+                            <form th:action="@{/webapp/requirementTypes/getRequirementType}" method="POST">
+                                <input type="hidden" name="uriRequirementType" th:value="${bRequirementType.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
                             </form>
                         </td>
@@ -87,17 +87,17 @@
             </table>
         </div>
         <div class="form-group">
-            <label><strong>Tipos de Sistema Específicos (Abaixo)</strong></label>
+            <label><strong>Domínios Específicos (Abaixo)</strong></label>
             <table class="table table-hover">
                 <tbody>
-                <th:block id="narrowerSystemTypeID" th:each="nSystemType : ${systemTypeNarrower}">
+                <th:block id="narrowerRequirementTypeID" th:each="nRequirementType : ${requirementTypeNarrower}">
                     <tr scope="row">
-                        <td th:text="${nSystemType.label}">
+                        <td th:text="${nRequirementType.label}">
                         </td>
                         <td>
                             <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
-                                <input type="hidden" name="uriSystemType" th:value="${nSystemType.url}" />
+                            <form th:action="@{/webapp/requirementTypes/getRequirementType}" method="POST">
+                                <input type="hidden" name="uriRequirementType" th:value="${nRequirementType.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
                             </form>
                         </td>
@@ -130,8 +130,8 @@
     </div>
 </div>
 <div class="container"  align="center">
-    <form th:action="@{/webapp/systemTypes/editSystemType}" th:object="${systemType}" method="POST">
-        <input type="hidden" name="uriSystemType" th:value="*{url}" />
+    <form th:action="@{/webapp/requirementTypes/editRequirementType}" th:object="${requirementType}" method="POST">
+        <input type="hidden" name="uriRequirementType" th:value="${requirementType.url}" />
         <button type="submit" class="btn btn-secondary" ><i >Editar</i></button>
     </form>
 </div>

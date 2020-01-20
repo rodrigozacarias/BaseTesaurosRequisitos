@@ -22,16 +22,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#">Requisitos</a>
+                <a class="nav-link" th:href="@{/webapp/requirements/getAllRequirements}" href="/webapp/systemTypes/getAllRequirements">Requisitos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/webapp/domains/getAllDomains}" href="/webapp/domains/getAllDomains">Domínios</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Tipos de Requisitos</a>
+                <a class="nav-link" th:href="@{/webapp/requirementTypes/getAllRequirementTypes}" href="/webapp/requirementTypes/getAllRequirementTypes">Tipos de Requisitos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Tipos de Sistemas</a>
+                <a class="nav-link" th:href="@{/webapp/systemTypes/getAllSystemTypes}" href="/webapp/systemTypes/getAllSystemTypes">Tipos de Sistemas</a>
             </li>
         </ul>
     </div>
@@ -46,7 +46,7 @@
 
     <form id="formulario-cadastro" th:action="@{/webapp/domains/edit}" th:object="${domain}" method="POST">
         <div class="form-group">
-            <label for="label"><strong>Nom</strong></label>
+            <label for="label"><strong>Nome</strong></label>
             <input type="text" class="form-control" id="label" th:field="*{label}" >
         </div>
         <div class="form-group">

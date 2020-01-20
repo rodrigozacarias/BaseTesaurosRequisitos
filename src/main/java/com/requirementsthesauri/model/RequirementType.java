@@ -17,6 +17,7 @@ public class RequirementType {
     private String description;
     private String linkDbpedia;
     private String broaderRequirementTypeID;
+    private List<String> broaderRequirementTypes;
     private List<String> narrowerRequirementTypeID;
     private List<String> narrowerRequirementID;
 
@@ -115,5 +116,13 @@ public class RequirementType {
 
     public void setNarrowerRequirementID(List<String> narrowerRequirementID) {
         this.narrowerRequirementID = narrowerRequirementID;
+    }
+
+    public List<String> getBroaderRequirementTypes() {
+        return broaderRequirementTypes;
+    }
+
+    public void setBroaderRequirementTypes(List<String> broaderRequirementTypes) {
+        this.broaderRequirementTypes = broaderRequirementTypes;
     }
 }

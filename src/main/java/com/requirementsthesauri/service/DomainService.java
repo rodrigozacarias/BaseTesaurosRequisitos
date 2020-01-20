@@ -283,7 +283,7 @@ public class DomainService {
 
 
 
-        public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
+    public ResponseEntity<?> getDomainDescribe(String domainID, String accept) throws Exception {
 
         Model fakeModel = getDomainModel(agUtils.uriDom + domainID);
 

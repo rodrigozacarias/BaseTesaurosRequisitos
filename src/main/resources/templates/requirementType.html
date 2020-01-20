@@ -9,7 +9,7 @@
     <link  rel="stylesheet" th:href="@{/css/sistema.css}" href="../static/css/sistema.css"/>
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
-    <title>Tipos de Sistemas</title>
+    <title>Tipos de Requisitos</title>
 </head>
 <body>
 
@@ -42,7 +42,7 @@
 
         <div >
             <div class="container"  align="center">
-                <h1>Tipos de Sistemas Cadastrados</h1>
+                <h1>Tipos de Requisitos Cadastrados</h1>
             </div>
 
             <table class="table table-hover">
@@ -56,23 +56,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!-- PREENCHENDO A TABELA COM OS TIPOS DE SISTEMAS CADASTRADOS-->
-                <th:block th:each="systemType : ${systemTypes}">
+                <!-- PREENCHENDO A TABELA COM OS USUÁRIOS CADASTRADOS-->
+                <th:block th:each="requirementType : ${requirementTypes}">
                     <tr scope="row">
-                        <td th:text="${systemType.label}"></td>
-                        <td th:text="${systemType.url}" ></td>
+                        <td th:text="${requirementType.label}"></td>
+                        <td th:text="${requirementType.url}" ></td>
 
                         <td>
                             <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
-                                <input type="hidden" name="uriSystemType" th:value="${systemType.url}" />
+                            <form th:action="@{/webapp/requirementTypes/getRequirementType}" method="POST">
+                                <input type="hidden" name="uriRequirementType" th:value="${requirementType.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Detalhar</i></button>
                             </form>
                         </td>
                         <td>
                             <!-- EXCLUINDO UM REGISTRO CADASTRADO -->
-                            <form th:action="@{/webapp/systemTypes/delete}" method="POST">
-                                <input type="hidden" name="uriSystemType" th:value="${systemType.url}" />
+                            <form th:action="@{/webapp/requirementTypes/delete}" method="POST">
+                                <input type="hidden" name="uriRequirementType" th:value="${requirementType.url}" />
                                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Deseja realmente excluir esse registro?');"><i >Excluir</i></button>
                             </form>
                         </td>
@@ -84,7 +84,7 @@
     </section>
 </div>
 <div class="container"  align="right">
-    <a class="btn btn-primary" th:href="@{/webapp/systemTypes/create}" href="/webapp/systemTypes/create" role="button">Novo</a>
+    <a class="btn btn-primary" th:href="@{/webapp/requirementTypes/create}" href="/webapp/requirementTypes/create" role="button">Novo</a>
 </div>
 
 </body>

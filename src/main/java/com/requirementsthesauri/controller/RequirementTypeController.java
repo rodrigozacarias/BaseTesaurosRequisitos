@@ -18,7 +18,7 @@ public class RequirementTypeController {
 
     @GetMapping("/getAllRequirementTypes")
     public ResponseEntity<?> getAllRequirementTypes(){
-        return requirementTypeService.getAllRequirementTypes();
+        return requirementTypeService.getAllRequirementTypes1();
     }
 
     @GetMapping(value = "/{requirementTypeID}", produces = {"application/json",
@@ -29,13 +29,13 @@ public class RequirementTypeController {
             "application/turtle",
             "application/rdf+json"})
     public ResponseEntity<?> getRequirementType(@PathVariable(value="requirementTypeID") String requirementTypeID, @RequestHeader("Accept") String accept) throws Exception {
-        return requirementTypeService.getRequirementType(requirementTypeID, accept);
+        return requirementTypeService.getRequirementTypeDescribe(requirementTypeID, accept);
     }
 
     @PostMapping(path = "/createRequirementTypesList", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRequirementTypesList(@RequestBody List<RequirementType> requirementTypes) throws Exception {
-        return requirementTypeService.createRequirementType(requirementTypes);
+        return requirementTypeService.createRequirementType1(requirementTypes);
     }
 
     @PostMapping(path = "/createRequirementType", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +43,7 @@ public class RequirementTypeController {
     public ResponseEntity<?> createRequirementTypesList(@RequestBody RequirementType requirementType) throws Exception {
         List<RequirementType> requirementTypes  = new ArrayList<>();
         requirementTypes.add(requirementType);
-        return requirementTypeService.createRequirementType(requirementTypes);
+        return requirementTypeService.createRequirementType1(requirementTypes);
     }
 
     @PutMapping(value = "/{requirementTypeID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +53,7 @@ public class RequirementTypeController {
 
     @DeleteMapping(value = "/{requirementTypeID}")
     public ResponseEntity<?> deleteRequirementType(@PathVariable(value="requirementTypeID") String requirementTypeID) {
-        requirementTypeService.deleteRequirementType(requirementTypeID);
+        requirementTypeService.deleteRequirementType1(requirementTypeID);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
