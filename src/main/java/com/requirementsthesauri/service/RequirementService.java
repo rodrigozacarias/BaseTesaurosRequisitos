@@ -74,6 +74,51 @@ public class RequirementService {
         return new ResponseEntity<>(output, HttpStatus.CREATED);
     }
 
+    public ResponseEntity<?> createRequirement1(List<Requirement> requirementsList){
+
+        authentication.getAuthentication();
+
+        int TAM = requirementsList.size();
+        JsonArrayBuilder jsonArrayAdd = Json.createArrayBuilder();
+        String uri = "localhost:8080/requirementsThesauri/requirements/";
+
+        for(int i=0; i<TAM; i++) {
+            String requirementID = requirementsList.get(i).getRequirementID();
+            String label = requirementsList.get(i).getLabel();
+            String language = requirementsList.get(i).getLanguage();
+            String prefLabel = requirementsList.get(i).getPrefLabel();
+            String altLabel = requirementsList.get(i).getAltLabel();
+            String problem = requirementsList.get(i).getProblem();
+            String context = requirementsList.get(i).getContext();
+            String template = requirementsList.get(i).getTemplate();
+            String example = requirementsList.get(i).getExample();
+            String broaderRequirementTypeID = requirementsList.get(i).getBroaderRequirementTypeID();
+            String broaderRequirementID = requirementsList.get(i).getBroaderRequirementID();
+            List<String> broaderDomainID = requirementsList.get(i).getBroaderDomainID();
+            List<String> broaderSystemTypeID = requirementsList.get(i).getBroaderSystemTypeID();
+            List<String> narrowerRequirementID = requirementsList.get(i).getNarrowerRequirementID();
+
+
+
+            String queryUpdate = methodsRequirementSPARQL.insertRequirementSparql1(requirementID, label, language, prefLabel, altLabel,
+                    problem, context, template, example, broaderRequirementTypeID,broaderRequirementID, broaderDomainID, broaderSystemTypeID,
+                    narrowerRequirementID);
+
+            UpdateRequest request = UpdateFactory.create(queryUpdate);
+            UpdateProcessor up = UpdateExecutionFactory.createRemote(request, agUtils.sparqlEndpoint);
+            up.execute();
+
+            jsonArrayAdd.add(uri+requirementID);
+
+        }
+        JsonArray ja = jsonArrayAdd.build();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JsonWriter writer = Json.createWriter(outputStream);
+        writer.writeArray(ja);
+        String output = new String(outputStream.toByteArray());
+        return new ResponseEntity<>(output, HttpStatus.CREATED);
+    }
+
 //    public ResponseEntity<?> createRequirement(List<Requirement> requirementsList) throws Exception {
 //        AGModel model = agUtils.getAGModel();
 //
@@ -380,10 +425,21 @@ public class RequirementService {
         return requirements;
     }
 
-    public void deleteRequirement(String requirementID) {
+    public void deleteRequirement(String requirementURI) {
         authentication.getAuthentication();
 
-        String deleteQuery = methodsRequirementSPARQL.deleteRequirementSparql(requirementID);
+        String deleteQuery = methodsRequirementSPARQL.deleteRequirementSparql(requirementURI);
+
+
+        UpdateRequest request = UpdateFactory.create(deleteQuery);
+        UpdateProcessor up = UpdateExecutionFactory.createRemote(request, agUtils.sparqlEndpoint);
+        up.execute();
+    }
+
+    public void deleteRequirement1(String requirementID) {
+        authentication.getAuthentication();
+
+        String deleteQuery = methodsRequirementSPARQL.deleteRequirementSparql1(requirementID);
 
 
         UpdateRequest request = UpdateFactory.create(deleteQuery);
@@ -398,7 +454,7 @@ public class RequirementService {
         List<Requirement> requirements = new ArrayList<>();
         requirements.add(newRequirement);
 
-        return createRequirement(requirements);
+        return createRequirement1(requirements);
 
     }
 

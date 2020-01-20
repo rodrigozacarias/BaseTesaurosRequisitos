@@ -35,7 +35,7 @@ public class RequirementController {
     @PostMapping(path = "/createRequirementsList", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createRequirementsList(@RequestBody List<Requirement> requirements) throws Exception {
-        return requirementService.createRequirement(requirements);
+        return requirementService.createRequirement1(requirements);
     }
 
     @PostMapping(path = "/createRequirement", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +43,7 @@ public class RequirementController {
     public ResponseEntity<?> createRequirement(@RequestBody Requirement requirement) throws Exception {
         List<Requirement> requirements  = new ArrayList<>();
         requirements.add(requirement);
-        return requirementService.createRequirement(requirements);
+        return requirementService.createRequirement1(requirements);
     }
 
     @PutMapping(value = "/{requirementID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +53,7 @@ public class RequirementController {
 
     @DeleteMapping(value = "/{requirementID}")
     public ResponseEntity<?> deleteRequirement(@PathVariable(value="requirementID") String requirementID) {
-        requirementService.deleteRequirement(requirementID);
+        requirementService.deleteRequirement1(requirementID);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

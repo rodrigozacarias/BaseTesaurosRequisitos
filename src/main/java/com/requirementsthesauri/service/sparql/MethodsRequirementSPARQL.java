@@ -5,6 +5,78 @@ import java.util.List;
 public class MethodsRequirementSPARQL {
 
     public String insertRequirementSparql(String requirementID, String label, String language, String prefLabel, String altLabel,
+                                           String problem, String context, String template, String example, String broaderRequirementTypeID,
+                                           String broaderRequirementID, List<String> broaderDomainID, List<String> broaderSystemTypeID,
+                                           List<String> narrowerRequirementID) {
+        String queryInsert = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX dcmitype: <http://purl.org/dc/dcmitype/>\n" +
+                "PREFIX dom: <localhost:8080/requirementsThesauri/domains/>\n" +
+                "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
+                "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
+                "PREFIX rqt: <localhost:8080/requirementsThesauri/requirementTypes/>\n" +
+                "INSERT DATA\n" +
+                "{\n" +
+                "  req:"+ requirementID +" 	rdf:type		skos:Concept ;\n" +
+                "                schema:url	req:"+ requirementID +" ;\n" +
+                "                rdfs:label	\""+label+"\" ;\n" +
+                "                dcmitype:language	\""+language+"\" ;\n" +
+                "                skos:preLabel	\""+prefLabel+"\" ;\n" +
+                "                skos:altLabel	\""+altLabel+"\" ;\n" +
+                "                skos:note\""+problem+"\" ;\n" +
+                "                skos:scopeNote	\""+context+"\" ;\n" +
+                "                skos:definition	\""+template+"\" ;\n" +
+                "                skos:example	\""+example+"\" ;\n";
+        if(broaderRequirementTypeID==null){
+            queryInsert = queryInsert +  "                skos:broader	rqt:"+broaderRequirementTypeID+" ;\n" +
+                    "                rdfs:subClassOf	rqt:"+broaderRequirementTypeID+" ;\n";
+        }else{
+            queryInsert = queryInsert +   "                skos:broader	<" + broaderRequirementTypeID + "> ;\n" +
+                    "                rdfs:subClassOf	<" + broaderRequirementTypeID + "> ;\n";
+        }
+        if(broaderRequirementID==null){
+            queryInsert = queryInsert +   "                skos:broader	req:"+broaderRequirementID+" ;\n" +
+                    "                rdfs:subClassOf	req:"+broaderRequirementID+" ;\n";
+        }else{
+            queryInsert = queryInsert +   "                skos:broader	<" + broaderRequirementID + "> ;\n" +
+                    "                rdfs:subClassOf	<" + broaderRequirementID + "> ;\n";
+        }
+        if(!broaderDomainID.isEmpty()){
+            for (String bd: broaderDomainID){
+                if(bd==null) {
+                    queryInsert = queryInsert + "                skos:broader	dom:" + bd + " ;\n";
+                }else{
+                    queryInsert = queryInsert + "                skos:broader	<" + bd + "> ;\n";
+                }
+            }
+        }
+        if(!broaderSystemTypeID.isEmpty()){
+            for (String bs: broaderSystemTypeID){
+                if(bs==null) {
+                    queryInsert = queryInsert + "                skos:broader	sys:" + bs + " ;\n";
+                }else{
+                    queryInsert = queryInsert + "                skos:broader	<" + bs + "> ;\n";
+                }
+            }
+        }
+        if(!narrowerRequirementID.isEmpty()){
+            for (String nr: narrowerRequirementID){
+                if(nr==null) {
+                    queryInsert = queryInsert + "                skos:narrower	req:" + nr + " ;\n";
+                }else{
+                    queryInsert = queryInsert + "                skos:narrower	<" + nr + "> ;\n";
+                }
+            }
+        }
+
+        queryInsert = queryInsert + ".\n }";
+        return queryInsert;
+
+    }
+
+    public String insertRequirementSparql1(String requirementID, String label, String language, String prefLabel, String altLabel,
                                           String problem, String context, String template, String example, String broaderRequirementTypeID,
                                           String broaderRequirementID, List<String> broaderDomainID, List<String> broaderSystemTypeID,
                                           List<String> narrowerRequirementID) {
@@ -30,7 +102,9 @@ public class MethodsRequirementSPARQL {
                 "                skos:definition	\""+template+"\" ;\n" +
                 "                skos:example	\""+example+"\" ;\n" +
                 "                skos:broader	rqt:"+broaderRequirementTypeID+" ;\n" +
-                "                skos:broader	req:"+broaderRequirementID+" ;\n";
+                "                skos:broader	req:"+broaderRequirementID+" ;\n" +
+                "                rdfs:subClassOf	rqt:"+broaderRequirementTypeID+" ;\n" +
+                "                rdfs:subClassOf	req:"+broaderRequirementID+" ;\n";
         if(!broaderDomainID.isEmpty()){
             for (String bd: broaderDomainID){
                 queryInsert = queryInsert + "                skos:broader	dom:"+bd+" ;\n";
@@ -191,7 +265,7 @@ public class MethodsRequirementSPARQL {
         return queryUpdate;
     }
 
-    public String deleteRequirementSparql(String requirementID){
+    public String deleteRequirementSparql1(String requirementID){
 
         String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -202,6 +276,23 @@ public class MethodsRequirementSPARQL {
                 "WHERE\n" +
                 "{ \n" +
                 "  req:"+requirementID+" ?p ?s;\n" +
+                " 		rdf:type skos:Concept .\n" +
+                "};\n";
+
+        return queryDelete;
+    }
+
+    public String deleteRequirementSparql(String requirementURI) {
+
+        String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
+                "\n" +
+                "DELETE \n" +
+                "	{ <" + requirementURI + "> ?p ?s }\n" +
+                "WHERE\n" +
+                "{ \n" +
+                "  <" + requirementURI + "> ?p ?s;\n" +
                 " 		rdf:type skos:Concept .\n" +
                 "};\n";
 
