@@ -4,13 +4,14 @@ import java.util.List;
 
 public class MethodsSystemTypeSPARQL {
 
-   public String insertSystemTypeSparql(String systemTypeID, String label, String prefLabel, String altLabel, String description,
-                                         String linkDbpedia, String broaderSystemTypeID, List<String> narrowerSystemTypeID, List<String> narrowerRequirementID) {
+    public String insertSystemTypeSparql(String systemTypeID, String label, String prefLabel, String altLabel, String description,
+                                          String linkDbpedia, String broaderSystemTypeID, List<String> narrowerSystemTypeID, List<String> narrowerRequirementID) {
         String queryInsert = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "PREFIX dbr: <http://dbpedia.org/resource/>\n" +
                 "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
                 "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
                 "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
                 "INSERT DATA\n" +
@@ -21,8 +22,59 @@ public class MethodsSystemTypeSPARQL {
                 "                skos:preLabel	\""+prefLabel+"\" ;\n" +
                 "                skos:altLabel	\""+altLabel+"\" ;\n" +
                 "                skos:note	\""+description+"\" ;\n" +
-                "                rdfs:seeAlso	dbr:"+linkDbpedia+" ;\n" +
-                "                skos:broader	sys:"+broaderSystemTypeID+" ;\n" ;
+                "                owl:sameAs	<" + linkDbpedia + "> ;\n" ;
+        if(broaderSystemTypeID==null){
+            queryInsert = queryInsert + "                skos:broader	sys:"+broaderSystemTypeID+" ;\n" +
+                    "                rdfs:subClassOf	sys:"+broaderSystemTypeID+" ;\n";
+        }else{
+            queryInsert = queryInsert +   "                skos:broader	<" + broaderSystemTypeID + "> ;\n" +
+                    "                rdfs:subClassOf	<" + broaderSystemTypeID + "> ;\n";
+        }
+        if (!narrowerSystemTypeID.isEmpty()) {
+            for (String nd: narrowerSystemTypeID){
+                if(nd==null){
+                    queryInsert = queryInsert + "                skos:narrower	sys:"+nd+" ;\n";
+                }else{
+                    queryInsert = queryInsert + "                skos:narrower	<" + nd + "> ;\n";
+                }
+            }
+        }
+        if (!narrowerRequirementID.isEmpty()) {
+            for (String nr: narrowerRequirementID) {
+                if (nr == null) {
+                    queryInsert = queryInsert + "                skos:narrower	req:" + nr + " ;\n";
+                } else {
+                    queryInsert = queryInsert + "                skos:narrower	<" + nr + "> ;\n";
+                }
+            }
+        }
+
+        queryInsert = queryInsert + ".\n }";
+        return queryInsert;
+
+    }
+
+   public String insertSystemTypeSparql1(String systemTypeID, String label, String prefLabel, String altLabel, String description,
+                                         String linkDbpedia, String broaderSystemTypeID, List<String> narrowerSystemTypeID, List<String> narrowerRequirementID) {
+        String queryInsert = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX dbr: <http://dbpedia.org/resource/>\n" +
+                "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
+                "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
+                "PREFIX req: <localhost:8080/requirementsThesauri/requirements/>\n" +
+                "INSERT DATA\n" +
+                "{\n" +
+                "  sys:"+ systemTypeID +" 	rdf:type		skos:Concept ;\n" +
+                "                schema:url	sys:"+ systemTypeID +" ;\n" +
+                "                rdfs:label	\""+label+"\" ;\n" +
+                "                skos:preLabel	\""+prefLabel+"\" ;\n" +
+                "                skos:altLabel	\""+altLabel+"\" ;\n" +
+                "                skos:note	\""+description+"\" ;\n" +
+                "                owl:sameAs	dbr:"+linkDbpedia+" ;\n" +
+                "                skos:broader	sys:"+broaderSystemTypeID+" ;\n" +
+                "                rdfs:subClassOf	sys:"+broaderSystemTypeID+" ;\n";
         if(!narrowerSystemTypeID.isEmpty()){
             for (String ns: narrowerSystemTypeID){
                 queryInsert = queryInsert + "                skos:narrower	sys:"+ns+" ;\n";
@@ -68,23 +120,24 @@ public class MethodsSystemTypeSPARQL {
         return querySelect;
     }
 
-    public String getSystemTypeSparqlSelect(String systemTypeID) {
+    public String getSystemTypeSparqlSelect(String systemTypeURI) {
         String query = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                 "PREFIX schema: <http://schema.org/>\n" +
+                "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
                 "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
                 "SELECT ?url ?label ?prefLabel ?altLabel ?description" +
                 " ?linkDbpedia ?broaderSystemTypeID ?narrowerSystemTypeID ?narrowerRequirementID \n" +
                 "WHERE{\n" +
                 "\n" +
-                "  sys:" + systemTypeID + "	rdf:type		skos:Concept ;\n" +
+                "<"+systemTypeURI+">	rdf:type		skos:Concept ;\n" +
                 "                schema:url	?url ;\n" +
                 "                rdfs:label	?label ;\n" +
                 "                skos:preLabel	?prefLabel ;\n" +
                 "                skos:altLabel	?altLabel ;\n" +
                 "                skos:note	?description ;\n" +
-                "                rdfs:seeAlso	?linkDbpedia ;\n" +
+                "                owl:sameAs	?linkDbpedia ;\n" +
                 "                skos:broader	?broaderSystemTypeID ;\n " +
                 "                skos:narrower  ?narrowerSystemTypeID ;\n" +
                 "                skos:narrower	?narrowerRequirementID .\n" +
@@ -152,7 +205,24 @@ public class MethodsSystemTypeSPARQL {
         return queryUpdate;
     }
 
-    public String deleteSystemTypeSparql(String systemTypeID){
+    public String deleteSystemTypeSparql(String systemTypeURI){
+
+        String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
+                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                "PREFIX sys: <localhost:8080/requirementsThesauri/systemTypes/>\n" +
+                "\n" +
+                "DELETE \n" +
+                "	{  <"+systemTypeURI+"> ?p ?s }\n" +
+                "WHERE\n" +
+                "{ \n" +
+                "   <"+systemTypeURI+">  ?p ?s;\n" +
+                " 		rdf:type skos:Concept .\n" +
+                "};\n";
+
+        return queryDelete;
+    }
+
+    public String deleteSystemTypeSparql1(String systemTypeID){
 
         String queryDelete = "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n" +
                 "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +

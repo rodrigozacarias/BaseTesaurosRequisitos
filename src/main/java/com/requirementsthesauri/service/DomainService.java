@@ -560,6 +560,17 @@ public class DomainService {
         up.execute();
     }
 
+    public void deleteDomain1(String domainID) {
+        authentication.getAuthentication();
+
+        String deleteQuery = methodsDomainSPARQL.deleteDomainSparql1(domainID);
+
+
+        UpdateRequest request = UpdateFactory.create(deleteQuery);
+        UpdateProcessor up = UpdateExecutionFactory.createRemote(request, agUtils.sparqlEndpoint);
+        up.execute();
+    }
+
     public ResponseEntity<?> updateDomain(String oldDomainID, Domain newDomain) throws Exception {
         authentication.getAuthentication();
 

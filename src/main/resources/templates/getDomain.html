@@ -70,7 +70,7 @@
             <label><strong> Domínio Generalista (Acima)</strong></label>
             <table class="table table-hover">
                 <tbody>
-                <th:block id="broaderDomainID" th:each="bDomain : ${broaderNarrower}">
+                <th:block id="broaderDomainID" th:each="bDomain : ${domainBroader}">
                     <tr scope="row">
                         <td th:text="${bDomain.label}">
                         </td>
@@ -116,7 +116,7 @@
                         </td>
                         <td>
                             <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                            <form th:action="@{/webapp/domains/getRequirement}" method="POST">
+                            <form th:action="@{/webapp/requirements/getRequirement}" method="POST">
                                 <input type="hidden" name="uriRequirement" th:value="${requirement.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
                             </form>

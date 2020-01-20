@@ -17,7 +17,7 @@ public class SystemTypeController {
     SystemTypeService systemTypeService = new SystemTypeService();
 
     @GetMapping("/getAllSystemTypes")
-    public ResponseEntity<?> getAllSystemTypes(){
+    public List<SystemType> getAllSystemTypes() throws Exception {
         return systemTypeService.getAllSystemTypes();
     }
 
@@ -29,7 +29,7 @@ public class SystemTypeController {
             "application/turtle",
             "application/rdf+json"})
     public ResponseEntity<?> getSystemType(@PathVariable(value="systemTypeID") String systemTypeID, @RequestHeader("Accept") String accept) throws Exception {
-        return systemTypeService.getSystemType(systemTypeID, accept);
+        return systemTypeService.getSystemTypeDescribe(systemTypeID, accept);
     }
 
     @PostMapping(path = "/createSystemTypesList", consumes = MediaType.APPLICATION_JSON_VALUE,

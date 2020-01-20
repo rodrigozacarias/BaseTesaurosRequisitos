@@ -17,6 +17,7 @@ public class SystemType {
     private String description;
     private String linkDbpedia;
     private String broaderSystemTypeID;
+    private List<String> broaderSystemTypes;
     private List<String> narrowerSystemTypeID;
     private List<String> narrowerRequirementID;
 
@@ -116,5 +117,13 @@ public class SystemType {
 
     public void setNarrowerRequirementID(List<String> narrowerRequirementID) {
         this.narrowerRequirementID = narrowerRequirementID;
+    }
+
+    public List<String> getBroaderSystemTypes() {
+        return broaderSystemTypes;
+    }
+
+    public void setBroaderSystemTypes(List<String> broaderSystemTypes) {
+        this.broaderSystemTypes = broaderSystemTypes;
     }
 }

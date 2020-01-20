@@ -55,7 +55,7 @@ public class DomainController {
 
     @DeleteMapping(value = "/{domainID}")
     public ResponseEntity<?> deleteDomain(@PathVariable(value="domainID") String domainID) {
-        domainService.deleteDomain(domainID);
+        domainService.deleteDomain1(domainID);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 

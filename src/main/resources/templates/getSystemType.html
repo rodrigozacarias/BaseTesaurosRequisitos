@@ -11,7 +11,7 @@
 
     <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 
-    <title>Domínio</title>
+    <title>Tipo de Sistema</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -31,7 +31,7 @@
                 <a class="nav-link" href="#">Tipos de Requisitos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Tipos de Sistemas</a>
+                <a class="nav-link" th:href="@{/webapp/systemTypes/getAllSystemTypes}" href="/webapp/systemTypes/getAllSystemTypes">Tipos de Sistemas</a>
             </li>
         </ul>
     </div>
@@ -41,10 +41,10 @@
 <div class="container p-3 mb-2 bg-light text-dark">
 
     <div class="container"  align="center">
-        <h1>Domínio</h1>
+        <h1>Tipo de Sistema</h1>
     </div>
 
-    <div id="formulario-cadastro" th:action="@{/webapp/domains/create}" th:object="${domain}" method="POST">
+    <div id="formulario-cadastro" th:action="@{/webapp/systemTypes/create}" th:object="${systemType}" method="POST">
         <div class="form-group">
             <label for="label"><strong>Nome</strong></label>
             <input type="text" class="form-control" id="label" th:field="*{label}" >
@@ -67,17 +67,17 @@
 
         </div>
         <div class="form-group">
-            <label><strong> Domínio Generalista (Acima)</strong></label>
+            <label><strong> Tipos de Sistema Generalistas (Acima)</strong></label>
             <table class="table table-hover">
                 <tbody>
-                <th:block id="broaderDomainID" th:each="bDomain : ${domainBroader}">
+                <th:block id="broaderSystemTypeID" th:each="bSystemType : ${systemTypeBroader}">
                     <tr scope="row">
-                        <td th:text="${bDomain.label}">
+                        <td th:text="${bSystemType.label}">
                         </td>
                         <td>
                             <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                            <form th:action="@{/webapp/domains/getDomain}" method="POST">
-                                <input type="hidden" name="uriDomain" th:value="${bDomain.url}" />
+                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
+                                <input type="hidden" name="uriSystemType" th:value="${bSystemType.url}" />
                                 <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
                             </form>
                         </td>
@@ -87,22 +87,22 @@
             </table>
         </div>
         <div class="form-group">
-            <label><strong>Domínios Específicos (Abaixo)</strong></label>
+            <label><strong>Tipos de Sistema Específicos (Abaixo)</strong></label>
             <table class="table table-hover">
-                 <tbody>
-                    <th:block id="narrowerDomainID" th:each="nDomain : ${domainNarrower}">
-                        <tr scope="row">
-                            <td th:text="${nDomain.label}">
-                            </td>
-                            <td>
-                                <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
-                                <form th:action="@{/webapp/domains/getDomain}" method="POST">
-                                    <input type="hidden" name="uriDomain" th:value="${nDomain.url}" />
-                                    <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
-                                </form>
-                            </td>
-                        </tr>
-                    </th:block>
+                <tbody>
+                <th:block id="narrowerSystemTypeID" th:each="nSystemType : ${systemTypeNarrower}">
+                    <tr scope="row">
+                        <td th:text="${nSystemType.label}">
+                        </td>
+                        <td>
+                            <!--                             REALIZANDO A REQUEST PARA DETALHAR UM CADASTRO-->
+                            <form th:action="@{/webapp/systemTypes/getSystemType}" method="POST">
+                                <input type="hidden" name="uriSystemType" th:value="${nSystemType.url}" />
+                                <button type="submit" class="btn btn-outline-info" ><i>Acessar</i></button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
                 </tbody>
             </table>
         </div>
@@ -127,11 +127,11 @@
             </table>
         </div>
 
-</div>
+    </div>
 </div>
 <div class="container"  align="center">
-    <form th:action="@{/webapp/domains/editDomain}" th:object="${domain}" method="POST">
-        <input type="hidden" name="uriDomain" th:value="${domain.url}" />
+    <form th:action="@{/webapp/systemTypes/editSystemType}" th:object="${systemType}" method="POST">
+        <input type="hidden" name="uriSystemType" th:value="*{url}" />
         <button type="submit" class="btn btn-secondary" ><i >Editar</i></button>
     </form>
 </div>

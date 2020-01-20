@@ -90,7 +90,7 @@ public class WebAppDomainController {
 
             model.addAttribute("domain", domain);
 
-            model.addAttribute("broaderNarrower", domainService.getDomainNarrowerOrBroader(domain.getBroaderDomains()));
+            model.addAttribute("domainBroader", domainService.getDomainNarrowerOrBroader(domain.getBroaderDomains()));
             model.addAttribute("domainNarrower", domainService.getDomainNarrowerOrBroader(domain.getNarrowerDomainID()));
             model.addAttribute("requirementNarrower", requirementService.getRequirementNarrower(domain.getNarrowerRequirementID()));
 
