@@ -66,14 +66,14 @@
             <textarea type="text" class="form-control" rows="4" id="description" th:field="*{description}" />
         </div>
         <div class="form-group">
-            <label for="broaderSystemTypeID"><strong>Domínio Generalista (Acima)</strong></label>
+            <label for="broaderSystemTypeID"><strong>Tipo de Sistema Generalista (Acima)</strong></label>
             <select class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="broaderSystemTypeID" th:field="*{broaderSystemTypeID}">
                 <option value=""> -- </option>
                 <option th:each="bdSystemType : ${allSystemTypes}" th:value="${bdSystemType.url}" th:text="${bdSystemType.label}"/>
             </select>
         </div>
         <div class="form-group">
-            <label for="narrowerSystemTypeID"><strong>Domínios Específicos (Abaixo)</strong></label>
+            <label for="narrowerSystemTypeID"><strong>Tipos de Sistemas Específicos (Abaixo)</strong></label>
             <select multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true"  id="narrowerSystemTypeID" th:field="*{narrowerSystemTypeID}">
                 <option value=""> -- </option>
                 <option th:each="nrSystemType : ${allSystemTypes}" th:value="${nrSystemType.url}" th:text="${nrSystemType.label}"/>
